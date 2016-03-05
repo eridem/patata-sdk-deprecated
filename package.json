@@ -1,0 +1,24 @@
+{
+  "name": "appium-mocha",
+  "version": "1.0.0",
+  "description": "Appium app with Mocha and Typescript for Android",
+  "main": "dist/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "colors": "^1.1.2",
+    "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.12.1",
+    "merge2": "^1.0.1",
+    "mocha": "^2.4.5",
+    "q": "^1.4.1",
+    "underscore": "^1.8.3",
+    "wd": "^0.4.0"
+  }
+}
