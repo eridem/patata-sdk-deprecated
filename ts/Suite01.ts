@@ -2,6 +2,9 @@
 declare var require: any;
 
 import chai = require('chai');
+require('should');
+require("chai-as-promised");
+//require('eventually');
 var wd = require('wd');
 
 var expect = chai.expect;
