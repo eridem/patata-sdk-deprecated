@@ -2,11 +2,7 @@
 
 var hooks = function () {
     this.After(function (scenario) {
-        this.driver.takeScreenshot().then(
-            function(image, err) {
-                scenario.attach(image, 'ímage/png');
-            }
-        );
+        console.log("      WD".blue, "Quit".grey);
                
         this.driver
             .quit();

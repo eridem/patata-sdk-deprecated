@@ -1,6 +1,6 @@
 "use strict";
 
-
+/*
 var report = [];
 
 var reporter = function () {
@@ -97,3 +97,4 @@ var reporter = function () {
 };
 
 module.exports = reporter;
+*/

@@ -1,34 +1,21 @@
 {
-  "name": "appium-sample-code",
+  "name": "appium-cucumber",
   "version": "1.0.0",
-  "description": "Appium Sample Code",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/appium/sample-code.git"
-  },
+  "description": "Using Cucumber with Appium",
+  "main": "features/step_definitions/most_popular_casino_games.js",
   "keywords": [
     "appium",
-    "sampl",
+    "cucumberjs",
     "examples"
   ],
-  "author": "sebv",
-  "license": "Apache 2",
-  "bugs": {
-    "url": "https://github.com/appium/sample-code/issues"
-  },
-  "homepage": "https://github.com/appium/sample-code",
+  "author": "Miguel Ángel Domínguez Coloma",
+  "license": "MIT",
   "devDependencies": {
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
     "colors": "^1.0.3",
     "cucumber": "^0.9.5",
-    "cucumber-html-report": "^0.2.2",
-    "cucumberjs-allure-reporter": "^1.0.0",
-    "express": "^4.12.3",
+    "hockeyapp-api-wrapper": "0.0.3",
     "q": "^2.0.2",
     "underscore": "^1.8.3",
     "wd": "^0.3.11"

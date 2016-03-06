@@ -17,6 +17,7 @@ exports.configure = function (driver) {
   driver.on('command', function (meth, path, data) {
       if (path.toString().startsWith('saveScreenshot') || path.toString().startsWith('takeScreenshot')) return;
           
+          /*
       global.scenario.attach(
           JSON.stringify({
               meth: meth,
@@ -29,14 +30,12 @@ exports.configure = function (driver) {
             function(image, err) {
                 global.scenario.attach(image, 'ímage/png');
             }
-        );
+        );*/
       
       //var logEntry = zeroPad(screenshotNumber).yellow + '.' + meth.yellow + ' ' + path.grey + ' ' + data || '';
       //global.scenario.attach(logEntry);
-      /*
-    if (path.toString().startsWith('saveScreenshot') || path.toString().startsWith('takeScreenshot')) return;
-
-    console.log('      ' + zeroPad(screenshotNumber).yellow + '.' + meth.yellow, path.grey, data || '');
+      
+    console.log('      WD'.blue, zeroPad(screenshotNumber).red, meth.yellow, path.grey, data || '');
 
     if (meth === 'CALL') {
       driver.saveScreenshot('./reports/screenshots/' + zeroPad(screenshotNumber) + '_CALL.png');
@@ -44,7 +43,7 @@ exports.configure = function (driver) {
       driver.saveScreenshot('./reports/screenshots/' + zeroPad(screenshotNumber) + '_RESPONSE.png');
       screenshotNumber++;
     }
-    */
+    
   });
   driver.on('http', function (meth, path, data) {
     //console.log('   - ' + meth.magenta, path, (data || '').grey);

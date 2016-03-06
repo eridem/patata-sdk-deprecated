@@ -1,2 +1,8 @@
 node_modules
 
+hockeyapp.json
+hockeyapp.jsonreports/screenshots/*
+reports/report.html
+reports/report.json
+
+apps/*
