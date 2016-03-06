@@ -1,15 +1,2 @@
-.idea/
-.vs/
-.vscode/
-obj/
-typings/
-node_modules/
+node_modules
 
-ts/**/*.js
-ts/**/*.map
-
-
-.ntvs_analysis.dat
-*.njsproj
-*.iml
-*.sln

@@ -1,26 +1,36 @@
 {
-  "name": "appium-mocha",
+  "name": "appium-sample-code",
   "version": "1.0.0",
-  "description": "Appium app with Mocha and Typescript for Android",
-  "main": "dist/js/index.js",
+  "description": "Appium Sample Code",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Miguel",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appium/sample-code.git"
+  },
+  "keywords": [
+    "appium",
+    "sampl",
+    "examples"
+  ],
+  "author": "sebv",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/appium/sample-code/issues"
+  },
+  "homepage": "https://github.com/appium/sample-code",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.2.0",
-    "colors": "^1.1.2",
-    "eventually": "^0.1.0",
-    "express": "^4.13.4",
-    "gulp": "^3.9.1",
-    "gulp-typescript": "^2.12.1",
-    "merge2": "^1.0.1",
-    "mocha": "^2.4.5",
-    "q": "^1.4.1",
-    "should": "^8.2.2",
+    "chai": "^2.2.0",
+    "chai-as-promised": "^5.0.0",
+    "colors": "^1.0.3",
+    "cucumber": "^0.9.5",
+    "cucumber-html-report": "^0.2.2",
+    "cucumberjs-allure-reporter": "^1.0.0",
+    "express": "^4.12.3",
+    "q": "^2.0.2",
     "underscore": "^1.8.3",
-    "wd": "^0.4.0"
+    "wd": "^0.3.11"
   }
 }
