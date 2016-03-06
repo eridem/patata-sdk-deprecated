@@ -30,36 +30,51 @@ Config.prototype.config = {
                         binary: process.cwd() + '/apps/test-qa.apk'
                     }
                 }
-            }   
+            }
         }
     }
 };
 
+Config.prototype.getOptions = function () {
+    if (this.options) {
+        return this.options;
+    } else {
+        this.options = {
+            ENV: process.env.ENV || 'android',
+            APP: process.env.APP,
+            FLAVOUR: process.env.FLAVOUR,
+            SERVER: process.env.SERVER || "local"
+        };
 
-Config.prototype.getEnv = function(envArg) {
-    var env = this.config[envArg];
+        console.log("      CONFIG".blue, JSON.stringify(this.options).gray);
+        return this.options;
+    }
+}
+
+Config.prototype.getEnv = function (options) {
+    var env = this.config[options.ENV];
     return env;
 };
-Config.prototype.getApp = function(envArg, appArg) {
-    var env = this.getEnv(envArg);
-    var app = env.apps[appArg];
+Config.prototype.getApp = function (options) {
+    var env = this.getEnv(options);
+    var app = env.apps[options.APP];
     return app;
 };
-Config.prototype.getFlavour = function(envArg, appArg, flavour) {
-    var app = this.getApp(envArg, appArg);
-    var fla = app.flavours[flavour];
+Config.prototype.getFlavour = function (options) {
+    var app = this.getApp(options);
+    var fla = app.flavours[options.FLAVOUR];
     return fla;
 };
-Config.prototype.getCapabilities = function(envArg, appArg) {
-    var app = this.getApp(envArg, appArg);
+Config.prototype.getCapabilities = function (options) {
+    var app = this.getApp(options);
     var cap = app.capabilities;
     return cap;
 };
-Config.prototype.getBinary = function(envArg, appArg, flavour) {
+Config.prototype.getBinary = function (options) {
     var Q = require('q');
     var deferred = Q.defer();
-    
-    var fla = this.getFlavour(envArg, appArg, flavour);
+
+    var fla = this.getFlavour(options);
     if (!fla.useProvider) {
         deferred.resolve(fla.binary);
     } else {
@@ -74,6 +89,7 @@ var config = new Config();
  * Export singleton
  */
 module.exports.config = config.config;
+module.exports.getOptions = config.getOptions;
 module.exports.getEnv = config.getEnv;
 module.exports.getApp = config.getApp;
 module.exports.getFlavour = config.getFlavour;
