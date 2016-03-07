@@ -1,26 +1,28 @@
 "use strict";
 
+require('../../components/ui');
+
 module.exports = function () {
     this.Given(/^I am in the Casino lobby$/, function () {
         return this.client
-            .elementById('btnGotIt')
-            .should.eventually.exist
-            .click()
-            .elementById('startpage_product_casino_view')
-            .should.eventually.exist
-            .click();
+            .NOTIFICATIONS_GOTIT_BTN
+                .should.eventually.exist
+                .click()
+            .STARTPAGE_CASINO_BTN
+                .should.eventually.exist
+                .click();
     });
 
     this.When(/^I open the left toolbar$/, function () {
         return this.client
-            .elementById('ib_menu_left')
+            .LEFT_MENU_BURGER
             .should.eventually.exist
             .click();
     });
 
     this.Then(/^I should see "(.*)" item on the menu$/, function (title) {
         return this.client
-            .elementByXPath('//*[@text="{0}"]'.replace(/\{0\}/gi, title))
+            //.LEFT_MENU_WITH_TITLE(title)
             .should.eventually.exist
             .click();
     });
