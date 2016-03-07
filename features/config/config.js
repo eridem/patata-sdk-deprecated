@@ -2,38 +2,25 @@
 /* global process */
 
 /**
- * Configuration
+ * Needed references
  */
-function Config() {
+require('./wd-dependencies');
+
+function Config() {}
+
+require('./config-emulator')(Config);
+require('./config-logging')(Config);
+require('./config-capabilities')(Config);
+require('./config-providers')(Config);
+
+Config.prototype.setConfig = function(config) {
+    this.config = config;
 }
 
-Config.prototype.config = {
-    android: {
-        apps: {
-            'betsson': {
-                capabilities: 'android19',
-                flavours: {
-                    'live': {
-                        useProvider: false, // This will use HockeyApp if true
-                        provider: {
-                            id: 'hockeyapp',
-                            app: 'Betsson'
-                        },
-                        binary: process.cwd() + '/apps/test.apk'
-                    },
-                    'qa': {
-                        useProvider: true, // This will use HockeyApp if true
-                        provider: {
-                            id: 'hockeyapp',
-                            app: 'Betsson QA'
-                        },
-                        binary: process.cwd() + '/apps/test-qa.apk'
-                    }
-                }
-            }
-        }
-    }
-};
+Config.prototype.init = function(config) {
+    this.setConfig(config);
+    return this;
+}
 
 Config.prototype.getOptions = function () {
     if (this.options) {
@@ -51,34 +38,29 @@ Config.prototype.getOptions = function () {
     }
 }
 
-Config.prototype.getEnv = function (options) {
-    var env = this.config[options.ENV];
+Config.prototype.getEnv = function () {
+    var env = this.config[this.getOptions().ENV];
     return env;
 };
-Config.prototype.getApp = function (options) {
-    var env = this.getEnv(options);
-    var app = env.apps[options.APP];
+Config.prototype.getApp = function () {
+    var env = this.getEnv();
+    var app = env.apps[this.getOptions().APP];
     return app;
 };
-Config.prototype.getFlavour = function (options) {
-    var app = this.getApp(options);
-    var fla = app.flavours[options.FLAVOUR];
+Config.prototype.getFlavour = function () {
+    var app = this.getApp();
+    var fla = app.flavours[this.getOptions().FLAVOUR];
     return fla;
 };
-Config.prototype.getCapabilities = function (options) {
-    var app = this.getApp(options);
-    var cap = app.capabilities;
-    return cap;
-};
-Config.prototype.getBinary = function (options) {
+Config.prototype.getBinary = function () {
     var Q = require('q');
     var deferred = Q.defer();
 
-    var fla = this.getFlavour(options);
+    var fla = this.getFlavour();
     if (!fla.useProvider) {
         deferred.resolve(fla.binary);
     } else {
-        require('../providers/' + fla.provider.id)(fla.provider, deferred);
+        require('../providers/' + fla.provider.id)(this, fla.provider, deferred);
     }
     return deferred.promise;
 };
@@ -88,10 +70,4 @@ var config = new Config();
 /**
  * Export singleton
  */
-module.exports.config = config.config;
-module.exports.getOptions = config.getOptions;
-module.exports.getEnv = config.getEnv;
-module.exports.getApp = config.getApp;
-module.exports.getFlavour = config.getFlavour;
-module.exports.getCapabilities = config.getCapabilities;
-module.exports.getBinary = config.getBinary;
+module.exports = config;

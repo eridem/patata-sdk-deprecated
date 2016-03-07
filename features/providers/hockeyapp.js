@@ -1,6 +1,8 @@
 "use strict";
 
-module.exports = function (providerOpts) {
+module.exports = function (config) {
+    if (!config) return;
+        
     var deferred = require('q').defer();
         
     // Import module
@@ -16,7 +18,7 @@ module.exports = function (providerOpts) {
     var hockeyAppCli = new HockeyApp.Client(YOUR_HOCKEYAPP_AUTH_TOKEN);
 
     hockeyAppCli.getApps().then(function (appsResponse) {
-        var app = HockeyApp.Utils.getAppByTitleMatch(appsResponse, providerOpts.app);
+        var app = HockeyApp.Utils.getAppByTitleMatch(appsResponse, config.getOptions().app);
 
         hockeyAppCli.getVersions(app).then(function (versionResponse) {
             var version = HockeyApp.Utils.getLatestVersion(versionResponse);

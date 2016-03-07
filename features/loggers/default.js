@@ -1,7 +1,9 @@
 "use strict";
 // global.scenario
 
-exports.configure = function (driver) {
+module.exports = function (driver) {
+    if (!driver) return;
+    
     var zeroPad = function (num, places) {
         places = places || 3;
         var zero = places - num.toString().length + 1;

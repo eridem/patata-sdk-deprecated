@@ -7,9 +7,8 @@ function ProviderFactory(driver, desired, implicitWait) {
     this.implicitWait = implicitWait;
 }
 
-ProviderFactory.prototype.create = function () {     
+ProviderFactory.prototype.create = function (config) {     
     // Get flavour
-    var config = require('./config');
     var options = config.getOptions();
     var fla = config.getFlavour(options);
     var provider = fla.provider;
@@ -21,7 +20,7 @@ ProviderFactory.prototype.create = function () {
     this.deferred = require('q').defer();
 
     // Load provider and pass options
-    require('../providers/' + providerId)(provider).then(
+    require('../providers/' + providerId)(config, provider).then(
         (function (providerFactory) {
             return function (providerOptions) {
                 console.log("      PROVIDER".blue, "End".grey, providerId.gray.grey);
