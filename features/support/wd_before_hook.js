@@ -1,6 +1,5 @@
 "use strict";
 /* global global */
-/* global process */
 
 var configPath = '../config/';
 var implicitWait = 3 * 1000;
@@ -17,9 +16,10 @@ var hooks = function () {
         return require(configPath + 'config')
             .init(options)
             .emulator()
+            .attachClient(this)
             .logger()
             .capabilities()
-            .provider(implicitWait);          
+            .provider(implicitWait);
     });
 };
 

@@ -22,6 +22,19 @@ Config.prototype.init = function(config) {
     return this;
 }
 
+Config.prototype.quit = function() {
+    this.driver
+        .quit();
+    return this.driver;
+}
+
+Config.prototype.attachClient = function(obj) {
+    if (obj) {
+        obj.client = this.driver;
+    }
+    return this;
+}
+
 Config.prototype.getOptions = function () {
     if (this.options) {
         return this.options;

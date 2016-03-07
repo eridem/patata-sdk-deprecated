@@ -51,5 +51,5 @@ module.exports = {
             port: 4723
         }
     },
-    loggers: [ 'default' ]
+    loggers: [ /*'default', 'screenshot'*/ ]
 };

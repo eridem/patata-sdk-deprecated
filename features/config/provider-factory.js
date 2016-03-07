@@ -43,10 +43,11 @@ ProviderFactory.prototype.initDriver = function () {
     this.driver
         .init(this.desired)
         .setImplicitWaitTimeout(this.implicitWait)
-        .then(function () {
-            // Back to app
-            this.deferred.resolve();
-        });
+        .then((function(deferred) { 
+            return function () {
+                // Back to app
+                deferred.resolve();
+        }})(this.deferred));
 }
 
 module.exports = ProviderFactory;

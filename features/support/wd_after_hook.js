@@ -1,12 +1,11 @@
 "use strict";
 
-var hooks = function () {
-    this.After(function (scenario) {
-        console.log("      WD".blue, "Quit".grey);
+var configPath = '../config/';
 
-        this.driver
-            .quit();
-        return this.driver;
+var hooks = function () {
+    this.After(function () {
+        console.log("      WD".blue, "Quit".grey);
+        return require(configPath + 'config').quit();
     });
 };
 

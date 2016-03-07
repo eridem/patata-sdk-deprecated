@@ -19,7 +19,12 @@ module.exports = function (driver) {
     driver.on('command', function (meth, path, data) {
         if (path.toString().startsWith('saveScreenshot') || path.toString().startsWith('takeScreenshot')) return;
       
-        console.log('      WD'.blue, meth.yellow, path.grey, data || '');
+        if (meth === 'CALL') {
+            driver.saveScreenshot('./reports/screenshots/' + zeroPad(screenshotNumber) + '_CALL.png');
+        } else if (meth === 'RESPONSE') {
+            driver.saveScreenshot('./reports/screenshots/' + zeroPad(screenshotNumber) + '_RESPONSE.png');
+            screenshotNumber++;
+        }
 
     });
     driver.on('http', function (meth, path, data) {
