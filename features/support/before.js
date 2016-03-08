@@ -1,25 +1,14 @@
 "use strict";
-/* global global */
 
-var configPath = '../../lib/config/';
-var implicitWait = 3 * 1000;
+var patata = require('../../lib/config/index');
 
 var hooks = function () {
-    this.Before(function (scenario) {
-        global.scenario = scenario;
-               
+    this.Before(function (scenario) {              
         // Load config options file
         var options = require('../options.js');
-               
+
         // Init
-        return require(configPath + 'index')
-            .init(options)
-            .emulator()
-            .attachClient(this)
-            .logger()
-            .capabilities()
-            .reports(scenario)
-            .provider(implicitWait);
+        return patata.start(this, scenario, options);
     });
 };
 

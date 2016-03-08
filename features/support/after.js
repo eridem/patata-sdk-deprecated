@@ -1,11 +1,10 @@
 "use strict";
 
-var configPath = '../../lib/config/';
+var patata = require('../../lib/config/index');
 
 var hooks = function () {
     this.After(function () {
-        console.log("      WD".blue, "Quit".grey);
-        return require(configPath + 'index').quit();
+        return patata.quit();
     });
 };
 
