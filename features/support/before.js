@@ -11,14 +11,14 @@ var hooks = function () {
         // Load config options file
         var options = require('../options.js');
                
-        // Use the config.js to configure different settings
-        // And use ENV, APP and FLAVOUR environment variables to switch between configs
+        // Init
         return require(configPath + 'index')
             .init(options)
             .emulator()
             .attachClient(this)
             .logger()
             .capabilities()
+            .reports(scenario)
             .provider(implicitWait);
     });
 };

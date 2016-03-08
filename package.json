@@ -10,7 +10,7 @@
   ],
   "author": "Miguel Ángel Domínguez Coloma",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
     "colors": "^1.0.3",
@@ -19,5 +19,6 @@
     "q": "^2.0.2",
     "underscore": "^1.8.3",
     "wd": "^0.3.11"
-  }
+  },
+  "publishConfig":{"registry":"http://proget:88/npm/local"}
 }
