@@ -1,8 +1,8 @@
 "use strict";
 
-require('../../components/ui');
-
 module.exports = function () {
+    require('../../components/ui')();
+
     this.Given(/^I am in the Casino lobby$/, function () {
         return this.client
             .NOTIFICATIONS_GOTIT_BTN
@@ -22,7 +22,7 @@ module.exports = function () {
 
     this.Then(/^I should see "(.*)" item on the menu$/, function (title) {
         return this.client
-            //.LEFT_MENU_WITH_TITLE(title)
+            .LEFT_MENU_WITH_TITLE(title)
             .should.eventually.exist
             .click();
     });

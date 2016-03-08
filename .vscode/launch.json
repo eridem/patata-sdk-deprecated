@@ -9,7 +9,7 @@
 			"stopOnEntry": false,
 			"args": [
                 //"--format", "json"
-                "-r", "features/
+                "--require", "features/"
             ],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,

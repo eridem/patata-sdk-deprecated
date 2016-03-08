@@ -1,7 +1,7 @@
 {
-  "name": "appium-cucumber",
-  "version": "1.0.0",
-  "description": "Using Cucumber with Appium",
+  "name": "patata",
+  "version": "1.0.1",
+  "description": "Native testing make it easy",
   "main": "features/step_definitions/most_popular_casino_games.js",
   "keywords": [
     "appium",
@@ -19,6 +19,5 @@
     "q": "^2.0.2",
     "underscore": "^1.8.3",
     "wd": "^0.3.11"
-  },
-  "publishConfig":{"registry":"http://proget:88/npm/local"}
+  }
 }
