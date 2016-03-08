@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function() {
-    var config = require('../lib/config/index');
+    var config = require('../lib/patata/patata');
 
     config.components({
         'NOTIFICATIONS_GOTIT_BTN':  function() { return this.elementById('btnGotIt'); },

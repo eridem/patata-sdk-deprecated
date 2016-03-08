@@ -1,8 +1,8 @@
 {
   "name": "patata",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Native testing make it easy",
-  "main": "features/step_definitions/most_popular_casino_games.js",
+  "main": "lib/patata/patata.js",
   "keywords": [
     "appium",
     "cucumberjs",
