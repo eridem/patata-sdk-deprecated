@@ -3,13 +3,17 @@
   "version": "1.0.2",
   "description": "Native testing make it easy",
   "main": "lib/patata/patata.js",
+  "author": "Miguel Ángel Domínguez Coloma",
+  "license": "Eridem AB. All rights reserved.",
   "keywords": [
     "appium",
     "cucumberjs",
     "examples"
   ],
-  "author": "Miguel Ángel Domínguez Coloma",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/eridemab/patata.git"
+  },
   "dependencies": {
     "chai": "^2.2.0",
     "chai-as-promised": "^5.0.0",
