@@ -1,6 +1,6 @@
 {
   "name": "patata",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Native testing make it easy",
   "main": "lib/patata/patata.js",
   "author": "Miguel Ángel Domínguez Coloma",
