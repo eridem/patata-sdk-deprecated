@@ -21,6 +21,7 @@
     "cucumber": "^0.9.5",
     "hockeyapp-api-wrapper": "0.0.3",
     "q": "^2.0.2",
+    "require-dir": "^0.3.0",
     "underscore": "^1.8.3",
     "wd": "^0.3.11"
   }
