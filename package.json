@@ -10,6 +10,11 @@
     "cucumberjs",
     "examples"
   ],
+  "scripts": {
+    "postinstall": "typings install",
+    "build": "rm -rf dist && tsc",
+    "prepublish": "typings install && npm run build"
+  },
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/eridemab/patata.git"
@@ -24,5 +29,10 @@
     "require-dir": "^0.3.0",
     "underscore": "^1.8.3",
     "wd": "^0.3.11"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.12.1",
+    "merge2": "^1.0.1"
   }
 }
