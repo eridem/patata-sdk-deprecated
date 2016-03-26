@@ -21,5 +21,5 @@ gulp.task('ts:compile', function () {
 });
 
 gulp.task('build', ['op:clean', 'ts:compile'], function () {
-	gulp.watch(['ts/**/*.ts'], ['op:clean', 'ts:compile']);
+	gulp.watch(['ts/**/*.ts', 'tsconfig.json'], ['op:clean', 'ts:compile']);
 });

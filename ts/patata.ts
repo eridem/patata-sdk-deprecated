@@ -1,6 +1,9 @@
+declare var require: any;
+
 import * as Models from './patata.d';
 import * as Emulation from './emulation/webDriver';
 import * as Q from 'q';
+import * as _ from 'underscore';
 
 export class Patata implements Models.IPatata {
     _configuration: Models.IConfiguration;
@@ -9,13 +12,16 @@ export class Patata implements Models.IPatata {
     _loggers: Array<Models.ILogger>;
     _emulator: Models.IEmulator;
     
-    constructor(configuration: Models.IConfiguration) {
-        this._configuration = configuration;
+    constructor() {
         this._reports = new Array();
         this._provider = null;
-        this._loggers = new Array();
-        
+        this._loggers = new Array();       
+    }
+
+    public init(configuration: Models.IConfiguration): Models.IPatata {
+        this._configuration = configuration;
         this._emulator = new Emulation.WebDriver(this._configuration);
+        return this;
     }
 
     public start(hook, scenario, options, implicitWait): Q.IPromise<Models.IPatata> {
@@ -23,7 +29,7 @@ export class Patata implements Models.IPatata {
         
         this.attachPatataIntoCucumber(hook);
         
-        if (this._provider == null) {
+        if (this._provider === null) {
             throw "You need to attach a provider in order to obtain the file to test.";
         }
         
@@ -34,7 +40,9 @@ export class Patata implements Models.IPatata {
         return deferred.promise;   
     }
     
-    public component(name: symbol, fn: any): Models.IPatata {
+    public component(name: string, fn: any): Models.IPatata {
+        if (!name || !fn) return this;
+        
         if (fn.length === 0) {
             Object.defineProperty(Object.prototype, name, { get: fn });
         } else {
@@ -44,45 +52,47 @@ export class Patata implements Models.IPatata {
     }
     
     public components(components: Array<any>): Models.IPatata {
-        components.forEach(c => () => this.component(c.name, c.fn));
-        return this;
-    }
-    
-    public registerReport(report: string | Models.IReport): Models.IPatata {
-        this.registerCollection(this._reports, report);
-        return this;
-    }
-    
-    public registerLogger(logger: string | Models.ILogger): Models.IPatata {
-        this.registerCollection(this._loggers, logger);
-        return this;
-    }
-    
-    public registerProvider(provider: string | Models.IProvider): Models.IPatata {
-        this.register(this._provider, provider);
-        return this;
-    }
-    
-    private registerCollection(where: Array<any>, what: any): Models.IPatata {   
-        if (!where) return this;
-                
-        if (typeof what === 'string') {
-            what = require(what);
+        for (var attr in components) {
+            this.component(attr, components[attr]);
         }
-        where.push(what);
         return this;
     }
     
-    private register(where: any, what: any): Models.IPatata {   
-        if (!where) return this;
-                
-        if (typeof what === 'string') {
-            what = require(what);
+    public registerReport(report: string | Models.IReport, options: any): Models.IPatata {
+        var Plugin = this.obtainPlugin(report);        
+        this._reports.push(new Plugin(options));
+        
+        return this;
+    }
+    
+    public registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
+        var Plugin = this.obtainPlugin(logger);        
+        this._loggers.push(new Plugin(options));
+        
+        return this;
+    }
+    
+    public registerProvider(provider: string | Models.IProvider, options: any): Models.IPatata {
+        if (provider === 'default') {
+            provider = './defaults/defaultProvider.js';
         }
-        where = what;
+        
+        var Plugin = this.obtainPlugin(provider);
+        this._provider = new Plugin(options);
+        
         return this;
     }
     
+    private obtainPlugin(what: any): any {
+        if (typeof what === 'string') {
+            var objs = require(what);
+            for (var attr in objs) {
+                what = objs[attr];
+            }
+        }
+        return what;
+    }
+       
     private get emulator(): Models.IEmulator {
         return this._emulator;
     }

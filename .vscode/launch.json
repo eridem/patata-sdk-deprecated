@@ -2,14 +2,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Launch",
+			"name": "Test",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/node_modules/cucumber/bin/cucumber.js",
+			"program": "${workspaceRoot}/dist/node_modules/cucumber/bin/cucumber.js",
 			"stopOnEntry": false,
 			"args": [
                 //"--format", "json"
-                "--require", "features/"
+                "./dist/features/"
             ],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,

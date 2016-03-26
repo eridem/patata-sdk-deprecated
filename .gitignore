@@ -43,3 +43,4 @@ typings/
 # Ignore automatically generated js files from VS
 ts/**/*.js
 ts/*.map
+dist

@@ -11,9 +11,9 @@
     "examples"
   ],
   "scripts": {
-    "postinstall": "typings install",
+    "postinstall": "tsd install",
     "build": "rm -rf dist && tsc",
-    "prepublish": "typings install && npm run build"
+    "prepublish": "tsd install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.12.1",
-    "merge2": "^1.0.1"
+    "merge2": "^1.0.1",
+    "typescript": "^1.8.9"
   }
 }

@@ -19,5 +19,6 @@ export class Configuration implements Models.IConfiguration {
     
     constructor(path: String) {
         path = path || '';
+        return this;
     }   
 }

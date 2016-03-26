@@ -1,11 +1,12 @@
-import * as Q from 'q';
+/// <reference path="../typings/tsd.d.ts" />
 
 export interface IPatata {
-    component(name: symbol, fn: any): IPatata;
+    init(configuration: IConfiguration): IPatata;
+    component(name: string, fn: any): IPatata;
     components(components: Array<any>): IPatata;
-    registerReport(report: string | IReport): IPatata;
-    registerLogger(report: string | ILogger): IPatata;
-    registerProvider(report: string | IProvider): IPatata;
+    registerReport(report: string | IReport, options: any): IPatata;
+    registerLogger(report: string | ILogger, options: any): IPatata;
+    registerProvider(report: string | IProvider, options: any): IPatata;
 }
 
 export interface IEnvOptions {

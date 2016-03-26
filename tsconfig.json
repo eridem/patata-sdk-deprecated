@@ -1,8 +1,9 @@
 ﻿{
+  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "moduleResolution": "classic",
+  "outDir": "./dist/",
+    "target": "es5",
+    "module": "commonjs",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -11,13 +12,10 @@
     "suppressImplicitAnyIndexErrors":true
   },
   "exclude": [
-    "typings/browser.d.ts",
-    "typings/browser",
+    "typings",
+    "dist",
+    "lib",
     "node_modules"
-  ],
-  "files": [
-    "ts",
-    "typings/main.d.ts"
   ],
   "formatCodeOptions": {
     "indentSize": 2,

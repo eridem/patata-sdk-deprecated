@@ -9,11 +9,13 @@ export class WebDriver implements Models.IEmulator {
     
     constructor(configuration: Models.IConfiguration) {
         this._configuration = configuration;
+        this._desired = this._configuration.capability;
+        return this;
     }
     
     public start(binary: String) : Q.IPromise<Models.IEmulator> {
-        for (let i; i < this._configuration.servers.length; i++) {
-            var serverConfig = this._configuration.servers[i];//.getServer.servers[options.SERVER];
+        for (let attr in this._configuration.servers) {
+            var serverConfig = this._configuration.servers[attr];//.getServer.servers[options.SERVER];
             this._wd = require('wd').promiseChainRemote(serverConfig);
         }
         
