@@ -61,4 +61,5 @@ export interface IServer {
 export interface IEmulator {
     start(uri: String):Q.IPromise<IEmulator>;
     quit():IEmulator;
+    driver:any;
 }

@@ -1,9 +1,12 @@
+"use strict";
 declare var require: any;
 
 import * as Models from './patata.d';
 import * as Emulation from './emulation/webDriver';
 import * as Q from 'q';
 import * as _ from 'underscore';
+
+require('./dependencies');
 
 export class Patata implements Models.IPatata {
     _configuration: Models.IConfiguration;
@@ -40,11 +43,17 @@ export class Patata implements Models.IPatata {
         return deferred.promise;   
     }
     
+    public quit() {
+        this._emulator.quit();
+        return this;
+    }
+    
     public component(name: string, fn: any): Models.IPatata {
         if (!name || !fn) return this;
-        
+        if (this._emulator.driver[name]) return this;        
+                
         if (fn.length === 0) {
-            Object.defineProperty(Object.prototype, name, { get: fn });
+            Object.defineProperty(this._emulator.driver, name, { get: fn });
         } else {
             this.component(name, () => fn);
         }
@@ -99,7 +108,7 @@ export class Patata implements Models.IPatata {
     
     private attachPatataIntoCucumber(hook: any) {
         if (hook) {
-            hook.patata = this._emulator;
+            hook.emu = this.emulator.driver;
         }
         return this;
     }
