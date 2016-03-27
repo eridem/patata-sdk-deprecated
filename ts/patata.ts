@@ -50,10 +50,10 @@ export class Patata implements Models.IPatata {
     
     public component(name: string, fn: any): Models.IPatata {
         if (!name || !fn) return this;
-        if (this._emulator.driver[name]) return this;        
+        if (this.emulator.driver[name]) return this;        
                 
         if (fn.length === 0) {
-            Object.defineProperty(this._emulator.driver, name, { get: fn });
+            Object.defineProperty(Object.prototype, name, { get: fn });
         } else {
             this.component(name, () => fn);
         }
