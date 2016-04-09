@@ -44,3 +44,4 @@ typings/
 ts/**/*.js
 ts/*.map
 dist
+test

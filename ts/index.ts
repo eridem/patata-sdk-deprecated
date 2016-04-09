@@ -1,3 +1,4 @@
 import * as Patata from './patata';
 
-export = new Patata.Patata();
+var singleton = new Patata.Patata();
+export = singleton;

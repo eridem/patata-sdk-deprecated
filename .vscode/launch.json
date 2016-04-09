@@ -2,26 +2,35 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Test",
+			"name": "Cucumber",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/dist/node_modules/cucumber/bin/cucumber.js",
+			"program": "${workspaceRoot}/node_modules/cucumber/bin/cucumber.js",
 			"stopOnEntry": false,
 			"args": [
-                //"--format", "json"
-                "./dist/features/"
+                "--require", "dist/support/",
+                "test/features/"
             ],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,
 			"runtimeArgs": [
 				"--nolazy"
 			],
-			"env": {
-				"ENV": "android",
-                "APP": "betsson",
-                "FLAVOUR": "live",
-                "SERVER": "local"
-			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+        {
+			"name": "PatataFile",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/test/patatafile.js",
+			"stopOnEntry": false,
+			"cwd": "${workspaceRoot}/test",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
 			"externalConsole": false,
 			"sourceMaps": false,
 			"outDir": null

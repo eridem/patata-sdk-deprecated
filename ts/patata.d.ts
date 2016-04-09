@@ -1,23 +1,21 @@
 /// <reference path="../typings/tsd.d.ts" />
 
 export interface IPatata {
-    init(configuration: IConfiguration): IPatata;
+    capability: ICapability;
+    servers: Array<IServer>;
+    reports: Array<IReport>;
+    provider: IProvider;
+    loggers: Array<ILogger>;
+    emulator: IEmulator;
+    
+    init(configuration: ISuiteConfiguration|string): IPatata;
+    suite(name: string, suite: ISuiteConfiguration): IPatata;
     component(name: string, fn: any): IPatata;
     components(components: Array<any>): IPatata;
-    registerReport(report: string | IReport, options: any): IPatata;
-    registerLogger(report: string | ILogger, options: any): IPatata;
-    registerProvider(report: string | IProvider, options: any): IPatata;
-}
-
-export interface IEnvOptions {
-    ENV: String;
-    APP: String;
-    FLAVOUR: String;
-    SERVER: String;
 }
 
 export interface IFlavour {
-    type: String;
+    type: string;
     provider: IProvider;
 }
 
@@ -26,14 +24,14 @@ export interface IApp {
     flavour: Array<IFlavour>;
 }
 
-export interface IConfiguration {
-    capability: ICapability;
-    provider: IProvider;
+export interface ISuiteConfiguration {
+    capability: string;
+    provider: ISuiteProvider;
     servers: Array<IServer>;
 }
 
 export interface IProvider {
-    getBin():Q.IPromise<String>;
+    getBin():Q.IPromise<string>;
 }
 
 export interface IReport {
@@ -44,22 +42,30 @@ export interface ILogger {
     
 }
 
+export interface ISuiteProvider {
+    id: string
+}
+
 export interface ICapability {
-    browserName: String;
-    'appium-version': String;
-    platformName: String;
-    PlatformVersion: String;
-    deviceName: String;
-    app: String;
+    browserName: string;
+    'appium-version': string;
+    platformName: string;
+    platformVersion: string;
+    deviceName: string;
+    app: string;
+}
+
+export interface ICapabilityFactory {
+    getByName(name: string): ICapability;
 }
 
 export interface IServer {
-    host: String;
+    host: string;
     port: number;
 }
 
 export interface IEmulator {
-    start(uri: String):Q.IPromise<IEmulator>;
+    start(uri: string):Q.IPromise<IEmulator>;
     quit():IEmulator;
     driver:any;
 }

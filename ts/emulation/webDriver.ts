@@ -7,19 +7,17 @@ export class WebDriver implements Models.IEmulator {
     
     private _wd: any;
     private _desired: any;
-    private _configuration: Models.IConfiguration;
        
-    constructor(configuration: Models.IConfiguration) {
-        this._configuration = configuration;
-        this._desired = this._configuration.capability;
+    constructor(patata: Models.IPatata) {
+        this._desired = patata.capability;
         
         this.buildDriverChain();        
-        this.setUpServers(this._configuration.servers);
+        this.setUpServers(patata.servers);
         
         return this;
     }
     
-    public start(binary: String) : Q.IPromise<Models.IEmulator> {        
+    public start(binary: string) : Q.IPromise<Models.IEmulator> {        
         this._desired.app = binary;
         
         // Init driver

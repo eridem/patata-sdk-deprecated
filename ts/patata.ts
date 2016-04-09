@@ -5,29 +5,56 @@ import * as Models from './patata.d';
 import * as Emulation from './emulation/webDriver';
 import * as Q from 'q';
 import * as _ from 'underscore';
+import * as Capabilities from './capabilities';
 
 require('./dependencies');
 
 export class Patata implements Models.IPatata {
-    _configuration: Models.IConfiguration;
+    _suites: Array<Models.ISuiteConfiguration>;
+    _capabilityFactory: Models.ICapabilityFactory;
+    
+    _capability: Models.ICapability;
+    _servers: Array<Models.IServer>;
     _reports: Array<Models.IReport>;
     _provider: Models.IProvider;
     _loggers: Array<Models.ILogger>;
     _emulator: Models.IEmulator;
     
+    public get capability(): Models.ICapability { return this._capability; }
+    public get servers(): Array<Models.IServer> { return this._servers; }
+    public get reports(): Array<Models.IReport> { return this._reports; }
+    public get provider(): Models.IProvider { return this._provider; }
+    public get loggers(): Array<Models.ILogger> { return this._loggers; }
+    public get emulator(): Models.IEmulator { return this._emulator; }
+    
     constructor() {
+        this._suites = new Array();
+        this._servers = new Array();
         this._reports = new Array();
         this._provider = null;
-        this._loggers = new Array();       
+        this._loggers = new Array();
+        this._emulator = null;
+        this._capabilityFactory = new Capabilities.CapabilityFactory();
     }
 
-    public init(configuration: Models.IConfiguration): Models.IPatata {
-        this._configuration = configuration;
-        this._emulator = new Emulation.WebDriver(this._configuration);
+    public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
+        var suiteConfiguration: Models.ISuiteConfiguration;
+        
+        if (typeof suiteConfigurationArg === 'string') {
+            suiteConfiguration = this._suites[suiteConfigurationArg];
+        } else {
+            suiteConfiguration = suiteConfigurationArg;
+        }
+        
+        this._capability = this.obtainCapability(suiteConfiguration);
+        this._provider = this.obtainProvider(suiteConfiguration);
+        this._servers = this.obtainServers(suiteConfiguration);        
+        this._emulator = new Emulation.WebDriver(this);
+        
         return this;
     }
 
-    public start(hook, scenario, options, implicitWait): Q.IPromise<Models.IPatata> {
+    public start(hook, scenario, implicitWait): Q.IPromise<Models.IPatata> {
         var deferred = Q.defer();
         
         this.attachPatataIntoCucumber(hook);
@@ -67,31 +94,47 @@ export class Patata implements Models.IPatata {
         return this;
     }
     
-    public registerReport(report: string | Models.IReport, options: any): Models.IPatata {
+    public suite(name: string, suite: Models.ISuiteConfiguration): Models.IPatata {
+        this._suites[name] = suite;
+        return this;
+    }
+    
+    private registerReport(report: string | Models.IReport, options: any): Models.IPatata {
         var Plugin = this.obtainPlugin(report);        
         this._reports.push(new Plugin(options));
         
         return this;
     }
     
-    public registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
+    private registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
         var Plugin = this.obtainPlugin(logger);        
         this._loggers.push(new Plugin(options));
         
         return this;
     }
-    
-    public registerProvider(provider: string | Models.IProvider, options: any): Models.IPatata {
-        if (provider === 'default') {
+        
+    private registerProvider(provider: string, options: any): Models.IProvider {
+        if (!provider || provider === 'default') {
             provider = './defaults/defaultProvider.js';
         }
         
         var Plugin = this.obtainPlugin(provider);
-        this._provider = new Plugin(options);
-        
-        return this;
+        return <Models.IProvider>new Plugin(options);
     }
-    
+
+    private obtainCapability(suiteConfiguration: Models.ISuiteConfiguration): Models.ICapability {
+        return this._capabilityFactory.getByName(suiteConfiguration.capability);
+    }
+
+    private obtainProvider(suiteConfiguration: Models.ISuiteConfiguration): Models.IProvider {
+        suiteConfiguration.provider.id = suiteConfiguration.provider.id || 'default';
+        return this.registerProvider(suiteConfiguration.provider.id, suiteConfiguration.provider);   
+    }
+
+    private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {
+        return suiteConfiguration.servers;
+    }
+
     private obtainPlugin(what: any): any {
         if (typeof what === 'string') {
             var objs = require(what);
@@ -101,11 +144,7 @@ export class Patata implements Models.IPatata {
         }
         return what;
     }
-       
-    private get emulator(): Models.IEmulator {
-        return this._emulator;
-    }
-    
+
     private attachPatataIntoCucumber(hook: any) {
         if (hook) {
             hook.emu = this.emulator.driver;

@@ -15,6 +15,7 @@
     "typings",
     "dist",
     "lib",
+    "test",
     "node_modules"
   ],
   "formatCodeOptions": {

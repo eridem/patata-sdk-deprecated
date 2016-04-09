@@ -10,11 +10,6 @@
     "cucumberjs",
     "examples"
   ],
-  "scripts": {
-    "postinstall": "tsd install",
-    "build": "rm -rf dist && tsc",
-    "prepublish": "tsd install && npm run build"
-  },
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/eridemab/patata.git"
