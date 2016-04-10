@@ -24,7 +24,7 @@
 			"name": "PatataFile",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/test/patatafile.js",
+			"program": "${workspaceRoot}/test/run.js",
 			"stopOnEntry": false,
 			"cwd": "${workspaceRoot}/test",
 			"runtimeExecutable": null,

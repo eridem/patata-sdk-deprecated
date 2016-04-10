@@ -64,7 +64,9 @@ export class Patata implements Models.IPatata {
         }
         
         this._provider.getBin().then((uri) => {
-            this._emulator.start(uri).then(() => { deferred.resolve(this); });
+            this._emulator.start(uri).then(() => { 
+                deferred.resolve(this); 
+            });
         });
         
         return deferred.promise;   
