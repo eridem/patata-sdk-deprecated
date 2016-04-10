@@ -2,7 +2,7 @@
   "name": "patata",
   "version": "1.0.3",
   "description": "Native testing make it easy",
-  "main": "lib/patata/patata.js",
+  "main": "dist/js/index.js",
   "author": "Miguel Ángel Domínguez Coloma",
   "license": "Eridem AB. All rights reserved.",
   "keywords": [
