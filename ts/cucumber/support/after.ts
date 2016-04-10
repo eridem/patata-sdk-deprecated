@@ -1,6 +1,6 @@
 "use strict";
 
-var patata = require('../../js/index');
+var patata = require('../../index');
 
 var hooks = function () {
     this.After(function () {
