@@ -38,6 +38,17 @@ export class Patata implements Models.IPatata {
     }
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
+        var suiteConfiguration: Models.ISuiteConfiguration = this.getSuite(suiteConfiguration);        
+       
+        this._capability = this.obtainCapability(suiteConfiguration);
+        this._provider = this.obtainProvider(suiteConfiguration);
+        this._servers = this.obtainServers(suiteConfiguration);        
+        this._emulator = new Emulation.WebDriver(this);
+        
+        return this;
+    }
+
+    public getSuite(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.ISuiteConfiguration {
         var suiteConfiguration: Models.ISuiteConfiguration;
         
         if (typeof suiteConfigurationArg === 'string') {
@@ -46,12 +57,7 @@ export class Patata implements Models.IPatata {
             suiteConfiguration = suiteConfigurationArg;
         }
         
-        this._capability = this.obtainCapability(suiteConfiguration);
-        this._provider = this.obtainProvider(suiteConfiguration);
-        this._servers = this.obtainServers(suiteConfiguration);        
-        this._emulator = new Emulation.WebDriver(this);
-        
-        return this;
+        return suiteConfiguration;
     }
 
     public start(hook, scenario, implicitWait): Q.IPromise<Models.IPatata> {

@@ -10,6 +10,7 @@ export interface IPatata {
     
     init(configuration: ISuiteConfiguration|string): IPatata;
     suite(name: string, suite: ISuiteConfiguration): IPatata;
+    getSuite(suiteConfigurationArg: ISuiteConfiguration|string): ISuiteConfiguration;
     component(name: string, fn: any): IPatata;
     components(components: Array<any>): IPatata;
 }
@@ -28,6 +29,8 @@ export interface ISuiteConfiguration {
     capability: string;
     provider: ISuiteProvider;
     servers: Array<IServer>;
+    components: Array<string>;
+    features: Array<string>;
 }
 
 export interface IProvider {

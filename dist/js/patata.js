@@ -44,6 +44,14 @@ var Patata = (function () {
         configurable: true
     });
     Patata.prototype.init = function (suiteConfigurationArg) {
+        var suiteConfiguration = this.getSuite(suiteConfiguration);
+        this._capability = this.obtainCapability(suiteConfiguration);
+        this._provider = this.obtainProvider(suiteConfiguration);
+        this._servers = this.obtainServers(suiteConfiguration);
+        this._emulator = new Emulation.WebDriver(this);
+        return this;
+    };
+    Patata.prototype.getSuite = function (suiteConfigurationArg) {
         var suiteConfiguration;
         if (typeof suiteConfigurationArg === 'string') {
             suiteConfiguration = this._suites[suiteConfigurationArg];
@@ -51,11 +59,7 @@ var Patata = (function () {
         else {
             suiteConfiguration = suiteConfigurationArg;
         }
-        this._capability = this.obtainCapability(suiteConfiguration);
-        this._provider = this.obtainProvider(suiteConfiguration);
-        this._servers = this.obtainServers(suiteConfiguration);
-        this._emulator = new Emulation.WebDriver(this);
-        return this;
+        return suiteConfiguration;
     };
     Patata.prototype.start = function (hook, scenario, implicitWait) {
         var _this = this;
