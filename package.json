@@ -1,10 +1,10 @@
 {
   "name": "patata",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Native testing make it easy",
   "main": "dist/js/index.js",
   "author": "Miguel Ángel Domínguez Coloma",
-  "license": "Eridem AB. All rights reserved.",
+  "license": "MIT",
   "keywords": [
     "appium",
     "cucumberjs",
