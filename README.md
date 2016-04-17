@@ -34,7 +34,7 @@ var patata = require('patata');
 patata.suite('suite01', {
     capability: 'android19',
     provider: {
-        path: process.cwd() + '/bin/myapp.apk'
+        path: 'bin/myapp.apk'
     },
     servers: [{ host: 'localhost', port: 4723 }]
 });
