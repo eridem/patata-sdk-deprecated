@@ -11,7 +11,7 @@ export class DefaultProvider implements Models.IProvider {
     
     public getBin():Q.IPromise<String> {
         var deferred = Q.defer();        
-        deferred.resolve(this._opts.path);        
+        deferred.resolve(process.cwd() + '/' + this._opts.path);
         return deferred.promise;
     }
 }

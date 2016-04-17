@@ -7,7 +7,7 @@ var DefaultProvider = (function () {
     }
     DefaultProvider.prototype.getBin = function () {
         var deferred = Q.defer();
-        deferred.resolve(this._opts.path);
+        deferred.resolve(process.cwd() + '/' + this._opts.path);
         return deferred.promise;
     };
     return DefaultProvider;
