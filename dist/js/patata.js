@@ -44,7 +44,7 @@ var Patata = (function () {
         configurable: true
     });
     Patata.prototype.init = function (suiteConfigurationArg) {
-        var suiteConfiguration = this.getSuite(suiteConfiguration);
+        var suiteConfiguration = this.getSuite(suiteConfigurationArg);
         this._capability = this.obtainCapability(suiteConfiguration);
         this._provider = this.obtainProvider(suiteConfiguration);
         this._servers = this.obtainServers(suiteConfiguration);

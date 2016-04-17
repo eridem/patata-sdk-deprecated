@@ -38,7 +38,7 @@ export class Patata implements Models.IPatata {
     }
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
-        var suiteConfiguration: Models.ISuiteConfiguration = this.getSuite(suiteConfiguration);        
+        var suiteConfiguration: Models.ISuiteConfiguration = this.getSuite(suiteConfigurationArg);        
        
         this._capability = this.obtainCapability(suiteConfiguration);
         this._provider = this.obtainProvider(suiteConfiguration);
