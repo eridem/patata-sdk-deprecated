@@ -101,7 +101,7 @@ module.exports = function() {
 }
 ```
 
-In these files, we create two components called "LOGIN_BUTTON" and "LEFT_MENU_BUTTON".
+In these files, we create two components called "*LOGIN_BUTTON*" and "*LEFT_MENU_BUTTON*".
 
 Both files contains the same component names, but the implementation of them are specific for *Android* and *iOS*.
 
