@@ -51,7 +51,7 @@ Based on the previous *patatafile.js* example, open your terminal and write:
 patata suite01
 ```
 
-# Capabilities {#capabilities}
+# Capabilities
 
 Device API. At the current moment, it is possible the following values:
 
@@ -59,7 +59,7 @@ Device API. At the current moment, it is possible the following values:
 - *android18*
 - *android19*
 
-# Components {#components}
+# Components
 
 Components are one of the powerful features of Patata: split device specific from feature.
 
@@ -123,7 +123,7 @@ patata.suite('suite01', {
 
 You can decide how to split and organize your components files and folders.
 
-# Features {#features}
+# Features
 
 Features are based on the Cucumber folder structure. More info here: [CucumberJS](https://github.com/cucumber/cucumber-js)
 
@@ -141,7 +141,7 @@ patata.suite('suite01', {
 //...
 ```
 
-# Providers {#providers}
+# Providers
 
 Providers will help us to fetch the binary file.
 
@@ -161,7 +161,7 @@ patata.suite('suite01', {
 //...
 ```
 
-# Servers {#servers}
+# Servers
 
 By default, Patata uses the local Appium server, but this can be modified to use one or more servers to test.
 
