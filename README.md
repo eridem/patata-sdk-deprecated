@@ -1,8 +1,8 @@
 # Patata
 
-A framework for easy and quick testing mobile applications using BDD. 
+A framework for easy and quick testing of mobile applications using BDD. 
 
-Based on open sources projects (Cucumber and Appium), Patata's goals are:
+Based on open source projects (Cucumber and Appium), Patata's goals are:
 
 - Focus on implementation of the test, forget about doing relationship between packages. Everything should work by default!
 - Create one single test that can work on *iOS* and *Android*.
