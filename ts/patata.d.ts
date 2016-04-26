@@ -48,7 +48,7 @@ export interface ILogger {
 }
 
 export interface ISuiteProvider {
-    id: string
+    package: string
 }
 
 export interface ICapability {

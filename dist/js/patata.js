@@ -128,8 +128,8 @@ var Patata = (function () {
         return this._capabilityFactory.getByName(suiteConfiguration.capability);
     };
     Patata.prototype.obtainProvider = function (suiteConfiguration) {
-        suiteConfiguration.provider.id = suiteConfiguration.provider.id || 'default';
-        return this.registerProvider(suiteConfiguration.provider.id, suiteConfiguration.provider);
+        suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
+        return this.registerProvider(suiteConfiguration.provider.package, suiteConfiguration.provider);
     };
     Patata.prototype.obtainServers = function (suiteConfiguration) {
         return suiteConfiguration.servers;

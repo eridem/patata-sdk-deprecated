@@ -138,8 +138,8 @@ export class Patata implements Models.IPatata {
     }
 
     private obtainProvider(suiteConfiguration: Models.ISuiteConfiguration): Models.IProvider {
-        suiteConfiguration.provider.id = suiteConfiguration.provider.id || 'default';
-        return this.registerProvider(suiteConfiguration.provider.id, suiteConfiguration.provider);   
+        suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
+        return this.registerProvider(suiteConfiguration.provider.package, suiteConfiguration.provider);   
     }
 
     private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {

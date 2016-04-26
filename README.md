@@ -1,59 +1,178 @@
 # Patata
 
-Framework for easy and quick testing mobile applications using BDD.
+Framework for easy and quick testing mobile applications using BDD. 
 
-Currently it is beta stage and some planned features are not available.
+Based on open sources projects as Cucumber and Appium, Patata goals are:
+
+- Focus on implementation of the test, forget about doing relationship between packages. Everything should work by default!
+- Create one single test that can work on *iOS* and *Android*.
+- Create single components for specific *iOS* and *Android* tests without change the tests.
+- Organize your suites in a single file.
 
 # Install it
 
 ```
-#!bash
 npm install -g patata-cli
 npm install --save patata
 ```
 
-# Folder structure
+# Patata keywords
 
-Folder structure will follow the best practices, but currently, this folder structure may be enought to help you out to start working with Patata:
+- *[Capabilities](#capabilities)*: device API where the test will be executed.
+- *[Components](#components)*: specific device UI elements.
+- *[Features](#features)*: set of behaviors to test.
+- *[Providers](#providers)*: where the binaries of the app can be obtained.
+- *[Servers](#servers)*: emulator server where the tests will be executed.
 
-```
-+ features
-- patatafile.js
-```
-
-# Patatafile.js (quick guide)
+# Patatafile.js
 
 The *patatafile.js* is a special file that will help us to include our suites and configurations. This file is used by the *patata-cli*.
 
 ```
-#!javascript
 "use strict";
 
 var patata = require('patata');
 
 patata.suite('suite01', {
     capability: 'android19',
+    components: ['components/android'],
+    features: ['features/set_01', 'features/set_02'],
     provider: {
-        path: 'bin/myapp.apk'
-    },
-    servers: [{ host: 'localhost', port: 4723 }]
+        path: 'apps/test.apk'
+    }
 });
 ```
 
-## Suite options
-
-- ***capability***: device API
-    - *ios81* || *android18* || *android19*
-- ***provider***: how to obtain the binary to test.
-    - ***id***: id of the provider to use. This is plugin based and more plugins will be available on NPM. If null or empty, it will use the default one that fetch the file from the file system.
-    - Different Options: each provider may contain different options. It is needed to check the documentation of each one.
-      - The default provider uses ***path*** which is the absolute binary path.
-- ***servers***: destinations for *Appium*. It needs ***hosts*** and ***port***.
-
-# Run suites
+## Run suites
 
 Based on the previous *patatafile.js* example, open your terminal and write:
 
 ```
 patata suite01
+```
+
+# Capabilities {#capabilities}
+
+Device API. At the current moment, it is possible the following values:
+
+- *ios81*
+- *android18*
+- *android19*
+
+# Components {#components}
+
+Components are one of the powerful features of Patata: split device specific from feature.
+
+E.g. file: components/android/ui.js
+
+```
+"use strict";
+
+module.exports = function() {
+    var patata = require('patata');
+
+    patata.components({       
+        'LOGIN_BUTTON': function() { 
+            return this.elementByName('login_button_android').should.eventually.exist; 
+        },
+        'LEFT_MENU_BUTTON': function() { 
+            return this.elementByName('left_menu_android').should.eventually.exist; 
+        }
+    });
+}
+```
+
+E.g. file: components/ios/ui.js
+
+```
+"use strict";
+
+module.exports = function() {
+    var patata = require('patata');
+
+    patata.components({       
+        'LOGIN_BUTTON': function() { 
+            return this.elementByName('ios_login_btn').should.exist; 
+        },
+        'LEFT_MENU_BUTTON': function() { 
+            return this.elementByName('ios_menu_btn').should.exist; 
+        }
+    });
+}
+```
+
+In these files, we create two components called "LOGIN_BUTTON" and "LEFT_MENU_BUTTON".
+
+Both files contains the same component names, but the implementation of them are specific for *Android* and *iOS*.
+
+## Components on *patatafile.js*
+
+We can create multiple files with components in different paths. The *suite* section of the *patatafile.js* contains an option to set multiple directory paths and/or files:
+
+```
+//...
+
+patata.suite('suite01', {
+    
+    components: ['components/android'],
+    
+});
+
+//...
+```
+
+You can decide how to split and organize your components files and folders.
+
+# Features {#features}
+
+Features are based on the Cucumber folder structure. More info here: [CucumberJS](https://github.com/cucumber/cucumber-js)
+
+Features can be organized in folders and can be referenced on the *patatafile.js* in the following way as example:
+
+```
+//...
+
+patata.suite('suite01', {
+    
+    features: ['features/set_01', 'features/set_02'],
+    
+});
+
+//...
+```
+
+# Providers {#providers}
+
+Providers will help us to fetch the binary file.
+
+By default, it exists one plugin to fetch the file from the file system or http. It can be configured in the following way on the *patatafile.js*:
+
+```
+//...
+
+patata.suite('suite01', {
+    
+    provider: {
+        path: RELATIVE_PATH_TO_FILE
+    },
+    
+});
+
+//...
+```
+
+# Servers {#servers}
+
+By default, Patata uses the local Appium server, but this can be modified to use one or more servers to test.
+
+```
+//...
+
+patata.suite('suite01', {
+    
+    servers: [{ host: 'localhost', port: 4723 }],
+        
+});
+
+//...
 ```
