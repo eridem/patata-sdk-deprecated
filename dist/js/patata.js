@@ -13,6 +13,11 @@ var Patata = (function () {
         this._emulator = null;
         this._capabilityFactory = new Capabilities.CapabilityFactory();
     }
+    Object.defineProperty(Patata.prototype, "currentSuite", {
+        get: function () { return this._currentSuite; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Patata.prototype, "capability", {
         get: function () { return this._capability; },
         enumerable: true,
@@ -44,10 +49,10 @@ var Patata = (function () {
         configurable: true
     });
     Patata.prototype.init = function (suiteConfigurationArg) {
-        var suiteConfiguration = this.getSuite(suiteConfigurationArg);
-        this._capability = this.obtainCapability(suiteConfiguration);
-        this._provider = this.obtainProvider(suiteConfiguration);
-        this._servers = this.obtainServers(suiteConfiguration);
+        this._currentSuite = this.getSuite(suiteConfigurationArg);
+        this._capability = this.obtainCapability(this.currentSuite);
+        this._provider = this.obtainProvider(this.currentSuite);
+        this._servers = this.obtainServers(this.currentSuite);
         this._emulator = new Emulation.WebDriver(this);
         return this;
     };

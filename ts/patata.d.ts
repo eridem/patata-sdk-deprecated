@@ -1,6 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/q/Q.d.ts" />
 
 export interface IPatata {
+    currentSuite: ISuiteConfiguration;
     capability: ICapability;
     servers: Array<IServer>;
     reports: Array<IReport>;

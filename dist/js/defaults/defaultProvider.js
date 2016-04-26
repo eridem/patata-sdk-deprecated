@@ -1,3 +1,4 @@
+/// <reference path="../../typings/q/Q.d.ts" />
 "use strict";
 var Q = require('q');
 var DefaultProvider = (function () {

@@ -1,3 +1,5 @@
+/// <reference path="../../typings/q/Q.d.ts" />
+
 import * as Models from '../patata.d';
 import * as Q from 'q';
 

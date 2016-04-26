@@ -11,6 +11,7 @@ require('./dependencies');
 
 export class Patata implements Models.IPatata {
     _suites: Array<Models.ISuiteConfiguration>;
+    _currentSuite: Models.ISuiteConfiguration;
     _capabilityFactory: Models.ICapabilityFactory;
     
     _capability: Models.ICapability;
@@ -20,6 +21,8 @@ export class Patata implements Models.IPatata {
     _loggers: Array<Models.ILogger>;
     _emulator: Models.IEmulator;
     
+    public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
+
     public get capability(): Models.ICapability { return this._capability; }
     public get servers(): Array<Models.IServer> { return this._servers; }
     public get reports(): Array<Models.IReport> { return this._reports; }
@@ -38,11 +41,11 @@ export class Patata implements Models.IPatata {
     }
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
-        var suiteConfiguration: Models.ISuiteConfiguration = this.getSuite(suiteConfigurationArg);        
+        this._currentSuite = this.getSuite(suiteConfigurationArg);        
        
-        this._capability = this.obtainCapability(suiteConfiguration);
-        this._provider = this.obtainProvider(suiteConfiguration);
-        this._servers = this.obtainServers(suiteConfiguration);        
+        this._capability = this.obtainCapability(this.currentSuite);
+        this._provider = this.obtainProvider(this.currentSuite);
+        this._servers = this.obtainServers(this.currentSuite);
         this._emulator = new Emulation.WebDriver(this);
         
         return this;
