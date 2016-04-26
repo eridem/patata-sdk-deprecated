@@ -18,11 +18,11 @@ npm install --save patata
 
 # Patata keywords
 
-- *[Capabilities](#capabilities)*: device API where the test will be executed.
-- *[Components](#components)*: specific device UI elements.
-- *[Features](#features)*: set of behaviors to test.
-- *[Providers](#providers)*: where the binaries of the app can be obtained.
-- *[Servers](#servers)*: emulator server where the tests will be executed.
+- *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
+- *[Components](#markdown-header-components)*: specific device UI elements.
+- *[Features](#markdown-header-features)*: set of behaviors to test.
+- *[Providers](#markdown-header-providers)*: where the binaries of the app can be obtained.
+- *[Servers](#markdown-header-servers)*: emulator server where the tests will be executed.
 
 # Patatafile.js
 
