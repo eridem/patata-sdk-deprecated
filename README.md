@@ -125,9 +125,20 @@ You can decide how to split and organize your components files and folders.
 
 # Features
 
-Features are based on the Cucumber folder structure. More info here: [CucumberJS](https://github.com/cucumber/cucumber-js)
+Features can be organized in folders, tags or scenarios. Those can be referenced on the *patatafile.js* as following:
 
-Features can be organized in folders and can be referenced on the *patatafile.js* in the following way as example:
+- Folders: set of strings that represents relative paths:
+    - *['features/set01', 'features/set02']*: folders and subfolders from those paths.
+- Scenarios: set of regular expressions by name:
+    - *[/topic_a/gi, /topic_b/gi]*
+    - *[/topic_?/gi]*
+- Tags: using the name of the tags from the tests:
+    - *['@tag1']*: all that contains that tag
+    - *['~@tag2']*: all that does not contain that tag
+    - *['@tag1,@tag2']*: all that contains the first tag OR the second tag.
+    - *['@tag1', '@tag2']*: all that contains the first thag AND the second tag.
+
+More info here about features, scenarios and tags: [CucumberJS](https://github.com/cucumber/cucumber-js)
 
 ```
 //...
