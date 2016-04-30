@@ -2,6 +2,10 @@
 
 A framework for easy and quick testing of mobile applications using BDD. 
 
+<center>
+![Patata](http://patata.io/icon.png)
+</center>
+
 # Install it
 
 ```
@@ -13,11 +17,11 @@ npm install --save patata
 
 - *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
 - *[Components](#markdown-header-components)*: specific device UI elements.
-- *[Configs](#markdown-header-configs)*: set of configurations.
+- *[Implementations](#markdown-header-implementations)*: set of files where the implementation of the tests are or configuration files.
 - *[Features](#markdown-header-features)*: set of behaviors to test.
-    - *[Files](#markdown-header-files)*: set of behaviours categorized by files.
-    - *[Tags](#markdown-header-tags)*: set of behaviours categorized by tests.
-    - *[Scenarios](#markdown-header-scenarios)*: set of behaviours categorized by scenarios.
+    - *Files*: set of behaviours categorized by files.
+    - *Tags*: set of behaviours categorized by tests.
+    - *Scenarios*: set of behaviours categorized by scenarios.
 - *[Providers](#markdown-header-providers)*: where the binaries of the app can be obtained.
 - *[Servers](#markdown-header-servers)*: emulator server where the tests will be executed.
 
@@ -33,7 +37,7 @@ var patata = require('patata');
 patata.suite('suite01', {
     capability: 'android19',
     components: ['components/android'],
-    configs: ['configs/myBrand' ],
+    implementations: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
     features: {
         files: ['features/set_01', 'features/set_02'],
         tags: ['@tag01,@tag02'], 
@@ -66,7 +70,7 @@ Device API. At the current moment, it is possible the following values:
 
 Components are one of the powerful features of Patata: split device specific from feature.
 
-E.g. file: components/android/ui.js
+E.g. file: *components/android/ui.js*
 
 ```
 "use strict";
@@ -85,7 +89,7 @@ module.exports = function() {
 }
 ```
 
-E.g. file: components/ios/ui.js
+E.g. file: *components/ios/ui.js*
 
 ```
 "use strict";
@@ -125,6 +129,22 @@ patata.suite('suite01', {
 ```
 
 You can decide how to split and organize your components files and folders.
+
+# Implementations
+
+Set of folders or files where the test implementations are. As well, this can be used to fetch configuration files.
+
+```
+//...
+
+patata.suite('suite01', {
+    
+    implementations: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
+    
+});
+
+//...
+```
 
 # Features
 
