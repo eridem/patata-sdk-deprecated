@@ -2,13 +2,6 @@
 
 A framework for easy and quick testing of mobile applications using BDD. 
 
-Based on open source projects (Cucumber and Appium), Patata's goals are:
-
-- Focus on implementation of the test, forget about doing relationship between packages. Everything should work by default!
-- Create one single test that can work on *iOS* and *Android*.
-- Create single components for specific *iOS* and *Android* tests without changing the tests.
-- Organize your suites in a single file.
-
 # Install it
 
 ```
@@ -20,7 +13,11 @@ npm install --save patata
 
 - *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
 - *[Components](#markdown-header-components)*: specific device UI elements.
+- *[Configs](#markdown-header-configs)*: set of configurations.
 - *[Features](#markdown-header-features)*: set of behaviors to test.
+    - *[Files](#markdown-header-files)*: set of behaviours categorized by files.
+    - *[Tags](#markdown-header-tags)*: set of behaviours categorized by tests.
+    - *[Scenarios](#markdown-header-scenarios)*: set of behaviours categorized by scenarios.
 - *[Providers](#markdown-header-providers)*: where the binaries of the app can be obtained.
 - *[Servers](#markdown-header-servers)*: emulator server where the tests will be executed.
 
@@ -36,10 +33,16 @@ var patata = require('patata');
 patata.suite('suite01', {
     capability: 'android19',
     components: ['components/android'],
-    features: ['features/set_01', 'features/set_02'],
+    configs: ['configs/myBrand' ],
+    features: {
+        files: ['features/set_01', 'features/set_02'],
+        tags: ['@tag01,@tag02'], 
+        scenarios: ['name01', 'name02']
+    },
     provider: {
         path: 'apps/test.apk'
-    }
+    },
+    servers: [{ host: 'localhost', port: 4723 }]    /* Optional */
 });
 ```
 
@@ -125,32 +128,36 @@ You can decide how to split and organize your components files and folders.
 
 # Features
 
-Features can be organized in folders, tags or scenarios. Those can be referenced on the *patatafile.js* as following:
+Features can be organized in folders, tags or scenarios. Those can be referenced on the *patatafile.js*.
 
-- Folders: set of strings that represents relative paths:
+- ***files***: set of strings that represents relative paths:
     - *['features/set01', 'features/set02']*: folders and subfolders from those paths.
-- Scenarios: set of regular expressions by name:
-    - *[/topic_a/gi, /topic_b/gi]*
-    - *[/topic_?/gi]*
-- Tags: using the name of the tags from the tests:
+- ***scenarios***: set of regular expressions by name:
+    - *['topic_a', 'topic_b']*
+    - *['topic_?']*
+- ***tags***: using the name of the tags from the tests:
     - *['@tag1']*: all that contains that tag
     - *['~@tag2']*: all that does not contain that tag
     - *['@tag1,@tag2']*: all that contains the first tag OR the second tag.
     - *['@tag1', '@tag2']*: all that contains the first thag AND the second tag.
-
-More info here about features, scenarios and tags: [CucumberJS](https://github.com/cucumber/cucumber-js)
 
 ```
 //...
 
 patata.suite('suite01', {
     
-    features: ['features/set_01', 'features/set_02'],
+    features: {
+        files: ['features/set_01', 'features/set_02'],
+        tags: ['@tag01,@tag02'], 
+        scenarios: ['name01', 'name02']
+    },
     
 });
 
 //...
 ```
+
+More info here about features, scenarios and tags: [CucumberJS](https://github.com/cucumber/cucumber-js)
 
 # Providers
 

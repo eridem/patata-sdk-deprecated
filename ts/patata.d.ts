@@ -27,12 +27,19 @@ export interface IApp {
     flavour: Array<IFlavour>;
 }
 
+export interface ISuiteConfigurationFeatures {
+    files: Array<string>;
+    tags: Array<string>;
+    scenarios: Array<string>;
+}
+
 export interface ISuiteConfiguration {
     capability: string;
+    components: Array<string>;
+    configs: Array<string>;
+    features: ISuiteConfigurationFeatures;
     provider: ISuiteProvider;
     servers: Array<IServer>;
-    components: Array<string>;
-    features: Array<string>;
 }
 
 export interface IProvider {
