@@ -2,9 +2,7 @@
 
 A framework for easy and quick testing of mobile applications using BDD. 
 
-<center>
 ![Patata](http://patata.io/icon.png)
-</center>
 
 # Install it
 
@@ -27,7 +25,7 @@ npm install --save patata
 
 # Patatafile.js
 
-The *patatafile.js* is a special file that will help us to include our suites and configurations. This file is used by the *patata-cli*.
+The ```patatafile.js``` is a special file that will help us to include our suites and configurations. This file is used by the ```patata-cli```.
 
 ```
 "use strict";
@@ -52,7 +50,7 @@ patata.suite('suite01', {
 
 ## Run suites
 
-Based on the previous *patatafile.js* example, open your terminal and write:
+Based on the previous ```patatafile.js``` example, open your terminal and write:
 
 ```
 patata suite01
@@ -62,15 +60,15 @@ patata suite01
 
 Device API. At the current moment, it is possible the following values:
 
-- *ios81*
-- *android18*
-- *android19*
+- ```ios81```
+- ```android18```
+- ```android19```
 
 # Components
 
 Components are one of the powerful features of Patata: split device specific from feature.
 
-E.g. file: *components/android/ui.js*
+E.g. file: ```components/android/ui.js```
 
 ```
 "use strict";
@@ -89,7 +87,7 @@ module.exports = function() {
 }
 ```
 
-E.g. file: *components/ios/ui.js*
+E.g. file: ```components/ios/ui.js```
 
 ```
 "use strict";
@@ -108,13 +106,13 @@ module.exports = function() {
 }
 ```
 
-In these files, we create two components called "*LOGIN_BUTTON*" and "*LEFT_MENU_BUTTON*".
+In these files, we create two components called ```LOGIN_BUTTON``` and ```LEFT_MENU_BUTTON```.
 
 Both files contains the same component names, but the implementation of them are specific for *Android* and *iOS*.
 
-## Components on *patatafile.js*
+## Components on ```patatafile.js```
 
-We can create multiple files with components in different paths. The *suite* section of the *patatafile.js* contains an option to set multiple directory paths and/or files:
+We can create multiple files with components in different paths. The *suite* section of the ```patatafile.js``` contains an option to set multiple directory paths and/or files:
 
 ```
 //...
@@ -148,18 +146,18 @@ patata.suite('suite01', {
 
 # Features
 
-Features can be organized in folders, tags or scenarios. Those can be referenced on the *patatafile.js*.
+Features can be organized in folders, files, tags or scenarios. Those can be referenced on the ```patatafile.js```.
 
-- ***files***: set of strings that represents relative paths:
-    - *['features/set01', 'features/set02']*: folders and subfolders from those paths.
-- ***scenarios***: set of regular expressions by name:
-    - *['topic_a', 'topic_b']*
-    - *['topic_?']*
-- ***tags***: using the name of the tags from the tests:
-    - *['@tag1']*: all that contains that tag
-    - *['~@tag2']*: all that does not contain that tag
-    - *['@tag1,@tag2']*: all that contains the first tag OR the second tag.
-    - *['@tag1', '@tag2']*: all that contains the first thag AND the second tag.
+- ```files```: set of strings that represents relative paths:
+    - ```['features/set01', 'features/set02']```: folders and subfolders from those paths.
+- ```scenarios```: set of regular expressions by name:
+    - ```['topic_a', 'topic_b']```
+    - ```['topic_?']```
+- ```tags```: using the name of the tags from the tests:
+    - ```['@tag1']```: all that contains that tag
+    - ```['~@tag2']```: all that does not contain that tag
+    - ```['@tag1,@tag2']```: all that contains the first tag OR the second tag.
+    - ```['@tag1', '@tag2']```: all that contains the first tag AND the second tag.
 
 ```
 //...
@@ -183,7 +181,7 @@ More info here about features, scenarios and tags: [CucumberJS](https://github.c
 
 Providers will help us to fetch the binary file.
 
-By default, it exists one plugin to fetch the file from the file system or http. It can be configured in the following way on the *patatafile.js*:
+By default, it exists one plugin to fetch the file from the file system or HTTP. It can be configured in the following way on the ```patatafile.js```:
 
 ```
 //...
