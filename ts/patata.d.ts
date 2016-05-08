@@ -8,7 +8,8 @@ export interface IPatata {
     reports: Array<IReport>;
     provider: IProvider;
     loggers: Array<ILogger>;
-    emulator: IEmulator;
+    emulator: IEmulator;    
+    config: any;
     
     init(configuration: ISuiteConfiguration|string): IPatata;
     suite(name: string, suite: ISuiteConfiguration): IPatata;
@@ -40,6 +41,7 @@ export interface ISuiteConfiguration {
     features: ISuiteConfigurationFeatures;
     provider: ISuiteProvider;
     servers: Array<IServer>;
+    config: any;
 }
 
 export interface IProvider {
@@ -59,8 +61,6 @@ export interface ISuiteProvider {
 }
 
 export interface ICapability {
-    browserName: string;
-    'appium-version': string;
     platformName: string;
     platformVersion: string;
     deviceName: string;

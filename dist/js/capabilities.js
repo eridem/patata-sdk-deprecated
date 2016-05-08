@@ -1,8 +1,6 @@
 "use strict";
 var ios81 = (function () {
     function ios81() {
-        this.browserName = "";
-        this['appium-version'] = "1.3";
         this.platformName = "iOS";
         this.platformVersion = "8.1";
         this.deviceName = "iPhone Simulator";
@@ -12,8 +10,6 @@ var ios81 = (function () {
 }());
 var android18 = (function () {
     function android18() {
-        this.browserName = "";
-        this['appium-version'] = "1.3";
         this.platformName = "Android";
         this.platformVersion = "4.3";
         this.deviceName = "Android Emulator";
@@ -23,8 +19,6 @@ var android18 = (function () {
 }());
 var android19 = (function () {
     function android19() {
-        this.browserName = "";
-        this['appium-version'] = "1.3";
         this.platformName = "Android";
         this.platformVersion = "4.4.2";
         this.deviceName = "Android Emulator";

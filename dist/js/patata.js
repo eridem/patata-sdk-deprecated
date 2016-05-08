@@ -48,12 +48,18 @@ var Patata = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Patata.prototype, "config", {
+        get: function () { return this._config; },
+        enumerable: true,
+        configurable: true
+    });
     Patata.prototype.init = function (suiteConfigurationArg) {
         this._currentSuite = this.getSuite(suiteConfigurationArg);
         this._capability = this.obtainCapability(this.currentSuite);
         this._provider = this.obtainProvider(this.currentSuite);
         this._servers = this.obtainServers(this.currentSuite);
         this._emulator = new Emulation.WebDriver(this);
+        this._config = this.obtainConfig(this.currentSuite);
         return this;
     };
     Patata.prototype.getSuite = function (suiteConfigurationArg) {
@@ -134,6 +140,16 @@ var Patata = (function () {
     Patata.prototype.obtainServers = function (suiteConfiguration) {
         return suiteConfiguration.servers;
     };
+    Patata.prototype.obtainConfig = function (suiteConfiguration) {
+        var config = suiteConfiguration.config;
+        if (typeof config === 'function') {
+            return config();
+        }
+        else if (typeof config === 'string') {
+            return require(config);
+        }
+        return config;
+    };
     Patata.prototype.obtainPlugin = function (what) {
         if (typeof what === 'string') {
             var objs = require(what);
@@ -146,7 +162,9 @@ var Patata = (function () {
     Patata.prototype.attachPatataIntoCucumber = function (hook) {
         if (hook) {
             hook.emu = this.emulator.driver;
+            hook.config = this.config;
         }
+        Object.defineProperty(Object.prototype, 'config', this.config);
         return this;
     };
     return Patata;

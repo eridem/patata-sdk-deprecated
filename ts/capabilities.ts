@@ -1,8 +1,6 @@
 import * as Models from './patata.d';
 
 class ios81 implements Models.ICapability {
-    public browserName: string        = "";
-    public 'appium-version': string   = "1.3";
     public platformName: string       = "iOS";
     public platformVersion: string    = "8.1";
     public deviceName: string         = "iPhone Simulator";
@@ -10,8 +8,6 @@ class ios81 implements Models.ICapability {
 }
 
 class android18 implements Models.ICapability {
-    public browserName: string        = "";
-    public 'appium-version': string   = "1.3";
     public platformName: string       = "Android";
     public platformVersion: string    = "4.3";
     public deviceName: string         = "Android Emulator";
@@ -19,8 +15,6 @@ class android18 implements Models.ICapability {
 }
 
 class android19 implements Models.ICapability {
-    public browserName: string        = "";
-    public 'appium-version': string   = "1.3";
     public platformName: string       = "Android";
     public platformVersion: string    = "4.4.2";
     public deviceName: string         = "Android Emulator";

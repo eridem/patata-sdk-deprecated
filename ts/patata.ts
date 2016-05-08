@@ -20,6 +20,7 @@ export class Patata implements Models.IPatata {
     _provider: Models.IProvider;
     _loggers: Array<Models.ILogger>;
     _emulator: Models.IEmulator;
+    _config: any;
     
     public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
 
@@ -29,6 +30,7 @@ export class Patata implements Models.IPatata {
     public get provider(): Models.IProvider { return this._provider; }
     public get loggers(): Array<Models.ILogger> { return this._loggers; }
     public get emulator(): Models.IEmulator { return this._emulator; }
+    public get config(): Models.IEmulator { return this._config; }
     
     constructor() {
         this._suites = new Array();
@@ -47,6 +49,7 @@ export class Patata implements Models.IPatata {
         this._provider = this.obtainProvider(this.currentSuite);
         this._servers = this.obtainServers(this.currentSuite);
         this._emulator = new Emulation.WebDriver(this);
+        this._config = this.obtainConfig(this.currentSuite);
         
         return this;
     }
@@ -145,6 +148,18 @@ export class Patata implements Models.IPatata {
     private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {
         return suiteConfiguration.servers;
     }
+    
+    private obtainConfig(suiteConfiguration: Models.ISuiteConfiguration): any {
+        var config = suiteConfiguration.config;
+        
+        if (typeof config === 'function') {
+            return config();
+        } else if (typeof config === 'string') {
+            return require(config);
+        }
+        
+        return config;
+    }
 
     private obtainPlugin(what: any): any {
         if (typeof what === 'string') {
@@ -159,7 +174,10 @@ export class Patata implements Models.IPatata {
     private attachPatataIntoCucumber(hook: any) {
         if (hook) {
             hook.emu = this.emulator.driver;
+            hook.config = this.config;
         }
+        Object.defineProperty(Object.prototype, 'config', this.config);
+
         return this;
     }
 }
