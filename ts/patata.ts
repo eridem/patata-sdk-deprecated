@@ -4,8 +4,8 @@ declare var require: any;
 import * as Models from './patata.d';
 import * as Emulation from './emulation/webDriver';
 import * as Q from 'q';
-import * as _ from 'underscore';
 import * as Capabilities from './capabilities';
+import * as LoaderHelpers from './loaderHelper';
 
 require('./dependencies');
 
@@ -13,6 +13,7 @@ export class Patata implements Models.IPatata {
     _suites: Array<Models.ISuiteConfiguration>;
     _currentSuite: Models.ISuiteConfiguration;
     _capabilityFactory: Models.ICapabilityFactory;
+    _loaderHelper: Models.ILoaderHelper;
     
     _capability: Models.ICapability;
     _servers: Array<Models.IServer>;
@@ -23,6 +24,20 @@ export class Patata implements Models.IPatata {
     _config: any;
     
     public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
+
+    private get loaderHelper(): Models.ILoaderHelper { 
+        if (!this._loaderHelper) { 
+            this._loaderHelper = new LoaderHelpers.LoaderHelper(); 
+        } 
+        return this._loaderHelper; 
+    }
+    
+    private get capabilityFactory(): Models.ICapabilityFactory { 
+        if (!this._capabilityFactory) { 
+            this._capabilityFactory = new Capabilities.CapabilityFactory(); 
+        } 
+        return this._capabilityFactory; 
+    }
 
     public get capability(): Models.ICapability { return this._capability; }
     public get servers(): Array<Models.IServer> { return this._servers; }
@@ -39,7 +54,6 @@ export class Patata implements Models.IPatata {
         this._provider = null;
         this._loggers = new Array();
         this._emulator = null;
-        this._capabilityFactory = new Capabilities.CapabilityFactory();
     }
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
@@ -108,20 +122,20 @@ export class Patata implements Models.IPatata {
         return this;
     }
     
-    public suite(name: string, suite: Models.ISuiteConfiguration): Models.IPatata {
-        this._suites[name] = suite;
+    public suite(name: string, suite: Models.ISuiteConfiguration | string | (() => Models.ISuiteConfiguration)): Models.IPatata {
+        this._suites[name] = this.loaderHelper.loadAsFunctionModuleOrObject(suite);
         return this;
     }
     
     private registerReport(report: string | Models.IReport, options: any): Models.IPatata {
-        var Plugin = this.obtainPlugin(report);        
+        var Plugin = this.loaderHelper.obtainPlugin(report);        
         this._reports.push(new Plugin(options));
         
         return this;
     }
     
     private registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
-        var Plugin = this.obtainPlugin(logger);        
+        var Plugin = this.loaderHelper.obtainPlugin(logger);        
         this._loggers.push(new Plugin(options));
         
         return this;
@@ -132,12 +146,12 @@ export class Patata implements Models.IPatata {
             provider = './defaults/defaultProvider.js';
         }
         
-        var Plugin = this.obtainPlugin(provider);
+        var Plugin = this.loaderHelper.obtainPlugin(provider);
         return <Models.IProvider>new Plugin(options);
     }
 
     private obtainCapability(suiteConfiguration: Models.ISuiteConfiguration): Models.ICapability {
-        return this._capabilityFactory.getByName(suiteConfiguration.capability);
+        return this.capabilityFactory.getByName(suiteConfiguration.capability);
     }
 
     private obtainProvider(suiteConfiguration: Models.ISuiteConfiguration): Models.IProvider {
@@ -150,27 +164,10 @@ export class Patata implements Models.IPatata {
     }
     
     private obtainConfig(suiteConfiguration: Models.ISuiteConfiguration): any {
-        var config = suiteConfiguration.config;
-        
-        if (typeof config === 'function') {
-            return config();
-        } else if (typeof config === 'string') {
-            return require(config);
-        }
-        
-        return config;
+        var config = suiteConfiguration.config;        
+        return this.loaderHelper.loadAsFunctionModuleOrObject(config);
     }
-
-    private obtainPlugin(what: any): any {
-        if (typeof what === 'string') {
-            var objs = require(what);
-            for (var attr in objs) {
-                what = objs[attr];
-            }
-        }
-        return what;
-    }
-
+    
     private attachPatataIntoCucumber(hook: any) {
         if (hook) {
             hook.emu = this.emulator.driver;

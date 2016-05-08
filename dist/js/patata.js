@@ -2,6 +2,7 @@
 var Emulation = require('./emulation/webDriver');
 var Q = require('q');
 var Capabilities = require('./capabilities');
+var LoaderHelpers = require('./loaderHelper');
 require('./dependencies');
 var Patata = (function () {
     function Patata() {
@@ -11,10 +12,29 @@ var Patata = (function () {
         this._provider = null;
         this._loggers = new Array();
         this._emulator = null;
-        this._capabilityFactory = new Capabilities.CapabilityFactory();
     }
     Object.defineProperty(Patata.prototype, "currentSuite", {
         get: function () { return this._currentSuite; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "loaderHelper", {
+        get: function () {
+            if (!this._loaderHelper) {
+                this._loaderHelper = new LoaderHelpers.LoaderHelper();
+            }
+            return this._loaderHelper;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "capabilityFactory", {
+        get: function () {
+            if (!this._capabilityFactory) {
+                this._capabilityFactory = new Capabilities.CapabilityFactory();
+            }
+            return this._capabilityFactory;
+        },
         enumerable: true,
         configurable: true
     });
@@ -110,16 +130,16 @@ var Patata = (function () {
         return this;
     };
     Patata.prototype.suite = function (name, suite) {
-        this._suites[name] = suite;
+        this._suites[name] = this.loaderHelper.loadAsFunctionModuleOrObject(suite);
         return this;
     };
     Patata.prototype.registerReport = function (report, options) {
-        var Plugin = this.obtainPlugin(report);
+        var Plugin = this.loaderHelper.obtainPlugin(report);
         this._reports.push(new Plugin(options));
         return this;
     };
     Patata.prototype.registerLogger = function (logger, options) {
-        var Plugin = this.obtainPlugin(logger);
+        var Plugin = this.loaderHelper.obtainPlugin(logger);
         this._loggers.push(new Plugin(options));
         return this;
     };
@@ -127,11 +147,11 @@ var Patata = (function () {
         if (!provider || provider === 'default') {
             provider = './defaults/defaultProvider.js';
         }
-        var Plugin = this.obtainPlugin(provider);
+        var Plugin = this.loaderHelper.obtainPlugin(provider);
         return new Plugin(options);
     };
     Patata.prototype.obtainCapability = function (suiteConfiguration) {
-        return this._capabilityFactory.getByName(suiteConfiguration.capability);
+        return this.capabilityFactory.getByName(suiteConfiguration.capability);
     };
     Patata.prototype.obtainProvider = function (suiteConfiguration) {
         suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
@@ -142,22 +162,7 @@ var Patata = (function () {
     };
     Patata.prototype.obtainConfig = function (suiteConfiguration) {
         var config = suiteConfiguration.config;
-        if (typeof config === 'function') {
-            return config();
-        }
-        else if (typeof config === 'string') {
-            return require(config);
-        }
-        return config;
-    };
-    Patata.prototype.obtainPlugin = function (what) {
-        if (typeof what === 'string') {
-            var objs = require(what);
-            for (var attr in objs) {
-                what = objs[attr];
-            }
-        }
-        return what;
+        return this.loaderHelper.loadAsFunctionModuleOrObject(config);
     };
     Patata.prototype.attachPatataIntoCucumber = function (hook) {
         if (hook) {

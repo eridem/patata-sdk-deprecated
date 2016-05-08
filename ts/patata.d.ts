@@ -81,3 +81,8 @@ export interface IEmulator {
     quit():IEmulator;
     driver:any;
 }
+
+export interface ILoaderHelper {
+    loadAsFunctionModuleOrObject(what: Object | string | (() => any)): any;
+    obtainPlugin(what: Object | string): any;
+}
