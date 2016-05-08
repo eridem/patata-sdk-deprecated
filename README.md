@@ -15,7 +15,8 @@ npm install --save patata
 
 - *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
 - *[Components](#markdown-header-components)*: specific device UI elements.
-- *[Implementations](#markdown-header-implementations)*: set of files where the implementation of the tests are or configuration files.
+- *[Include](#markdown-header-include)*: set of files where the implementation of the tests are.
+- *[Config](#markdown-header-config)*: set of custom configurations which we can use on our tests or components.
 - *[Features](#markdown-header-features)*: set of behaviors to test.
     - *Files*: set of behaviours categorized by files.
     - *Tags*: set of behaviours categorized by tests.
@@ -35,7 +36,11 @@ var patata = require('patata');
 patata.suite('suite01', {
     capability: 'android19',
     components: ['components/android'],
-    implementations: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
+    include: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
+    config: {
+        username: 'patata',
+        password: 'patata'
+    },
     features: {
         files: ['features/set_01', 'features/set_02'],
         tags: ['@tag01,@tag02'], 
@@ -115,34 +120,61 @@ Both files contains the same component names, but the implementation of them are
 We can create multiple files with components in different paths. The *suite* section of the ```patatafile.js``` contains an option to set multiple directory paths and/or files:
 
 ```
-//...
-
 patata.suite('suite01', {
     
     components: ['components/android'],
     
 });
-
-//...
 ```
 
 You can decide how to split and organize your components files and folders.
 
-# Implementations
+# Include
 
 Set of folders or files where the test implementations are. As well, this can be used to fetch configuration files.
 
 ```
-//...
-
 patata.suite('suite01', {
     
-    implementations: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
+    include: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
     
 });
-
-//...
 ```
+
+# Config
+
+We can bypass an object to our tests from the ```patatafile.js```.
+
+```
+patata.suite('suite01', {
+    
+    config: {
+        username: 'patata',
+        password: 'patata'
+    },
+    
+});
+```
+
+We can use the configuration in two different ways. From the test cases using ```this.config```:
+
+```
+this.When('I write enter my credentials', function (value, comp) {
+    return this.emu
+        .USERNAME_FIELD.setText(this.config.username)
+        .PASSWORD_FIELD.setText(this.config.password);
+});
+```
+
+Or from other files using ```patata```:
+
+```
+var patata = require('patata');
+var usernameValue = patata.config.username;
+var passwordValue = patata.config.password;
+```
+
+
 
 # Features
 
@@ -160,8 +192,6 @@ Features can be organized in folders, files, tags or scenarios. Those can be ref
     - ```['@tag1', '@tag2']```: all that contains the first tag AND the second tag.
 
 ```
-//...
-
 patata.suite('suite01', {
     
     features: {
@@ -171,8 +201,6 @@ patata.suite('suite01', {
     },
     
 });
-
-//...
 ```
 
 More info here about features, scenarios and tags: [CucumberJS](https://github.com/cucumber/cucumber-js)
@@ -184,8 +212,6 @@ Providers will help us to fetch the binary file.
 By default, it exists one plugin to fetch the file from the file system or HTTP. It can be configured in the following way on the ```patatafile.js```:
 
 ```
-//...
-
 patata.suite('suite01', {
     
     provider: {
@@ -193,8 +219,6 @@ patata.suite('suite01', {
     },
     
 });
-
-//...
 ```
 
 # Servers
@@ -202,13 +226,9 @@ patata.suite('suite01', {
 By default, Patata uses the local Appium server, but this can be modified to use one or more servers to test.
 
 ```
-//...
-
 patata.suite('suite01', {
     
     servers: [{ host: 'localhost', port: 4723 }],
         
 });
-
-//...
 ```
