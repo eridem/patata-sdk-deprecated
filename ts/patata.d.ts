@@ -37,7 +37,7 @@ export interface ISuiteConfigurationFeatures {
 export interface ISuiteConfiguration {
     capability: string;
     components: Array<string>;
-    implementations: Array<string>;
+    include: Array<string>;
     features: ISuiteConfigurationFeatures;
     provider: ISuiteProvider;
     servers: Array<IServer>;
