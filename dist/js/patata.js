@@ -100,14 +100,14 @@ var Patata = (function () {
             throw "You need to attach a provider in order to obtain the file to test.";
         }
         this._provider.getBin().then(function (uri) {
-            _this._emulator.start(uri).then(function () {
+            _this.emulator.start(uri).then(function () {
                 deferred.resolve(_this);
             });
         });
         return deferred.promise;
     };
     Patata.prototype.quit = function () {
-        this._emulator.quit();
+        this.emulator.quit();
         return this;
     };
     Patata.prototype.component = function (name, fn) {

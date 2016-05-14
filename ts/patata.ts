@@ -90,7 +90,7 @@ export class Patata implements Models.IPatata {
         }
         
         this._provider.getBin().then((uri) => {
-            this._emulator.start(uri).then(() => { 
+            this.emulator.start(uri).then(() => { 
                 deferred.resolve(this); 
             });
         });
@@ -99,7 +99,7 @@ export class Patata implements Models.IPatata {
     }
     
     public quit() {
-        this._emulator.quit();
+        this.emulator.quit();
         return this;
     }
     
