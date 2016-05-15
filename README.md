@@ -22,6 +22,7 @@ npm install --save patata
     - *Tags*: set of behaviours categorized by tests.
     - *Scenarios*: set of behaviours categorized by scenarios.
 - *[Providers](#markdown-header-providers)*: where the binaries of the app can be obtained.
+- *[Reports](#markdown-header-reports)*: how the output is created. Support integration too.
 - *[Servers](#markdown-header-servers)*: emulator server where the tests will be executed.
 
 # Patatafile.js
@@ -41,6 +42,7 @@ patata.suite('suite01', {
         username: 'patata',
         password: 'patata'
     },
+    reports: [ 'json' ],
     features: {
         files: ['features/set_01', 'features/set_02'],
         tags: ['@tag01,@tag02'], 
@@ -217,6 +219,23 @@ patata.suite('suite01', {
     provider: {
         path: RELATIVE_PATH_TO_FILE
     },
+    
+});
+```
+
+
+# Reports
+
+Providers will create a summary of the tests. They have a lot of possibilities, from output on the screen, to a file, CI tools, Slack, ... .
+
+At the moment, it exists one plugin for reports:
+
+- ```json```: which will obtain all information from the tests and save it in a file called ```results.json```.
+
+```
+patata.suite('suite01', {
+    
+    reports: [ 'json' ],
     
 });
 ```
