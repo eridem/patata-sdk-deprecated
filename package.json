@@ -1,9 +1,10 @@
 {
   "name": "patata",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Native testing make it easy",
   "main": "dist/js/index.js",
-  "author": "Miguel Ángel Domínguez Coloma",
+  "author": "Miguel Ángel Domínguez Coloma <m@eridem.net> (http://eridem.net)",
+  "constributors": [],
   "license": "MIT",
   "keywords": [
     "appium",

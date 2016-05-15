@@ -7,7 +7,7 @@ export class WebDriver implements Models.IEmulator {
     
     private _wd: any;
     private _desired: any;
-       
+             
     constructor(patata: Models.IPatata) {
         this._desired = patata.capability;
         
@@ -21,14 +21,14 @@ export class WebDriver implements Models.IEmulator {
         this._desired.app = binary;
         
         // Init driver
-        return this._wd
+        return this.driver
             .init(this._desired)
             //.setImplicitWaitTimeout(this.implicitWait)
             ;
     }
     
     public quit() : Models.IEmulator {
-        this._wd
+        this.driver
             .close()
             .quit();
         return this;
@@ -46,6 +46,25 @@ export class WebDriver implements Models.IEmulator {
         for (var attr in servers) {
             var serverConfig = servers[attr];
             this._wd = require('wd').promiseChainRemote(serverConfig);
-        }  
+        }
+    }
+    
+    public registerReports(report: Array<Models.IReport>): Models.IEmulator {
+        this.driver.on('status', function (info) {
+            report.forEach(report => {
+                report.fromEmulator('status', info, '', '');
+            });
+        });
+        this.driver.on('command', function (meth, path, data) {
+            report.forEach(report => {
+                report.fromEmulator('command', meth, path, data || '');
+            });
+        });
+        this.driver.on('http', function (meth, path, data) {
+            report.forEach(report => {
+                report.fromEmulator('http', meth, path, data || '');
+            });            
+        });
+        return this;
     }
 }

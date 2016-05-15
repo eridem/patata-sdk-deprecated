@@ -6,6 +6,8 @@ import * as Emulation from './emulation/webDriver';
 import * as Q from 'q';
 import * as Capabilities from './capabilities';
 import * as LoaderHelpers from './loaderHelper';
+import * as ReportHelper from './reportHelper';
+import * as ReportFactory from './defaults/defaultReportFactory';
 
 require('./dependencies');
 
@@ -14,6 +16,8 @@ export class Patata implements Models.IPatata {
     _currentSuite: Models.ISuiteConfiguration;
     _capabilityFactory: Models.ICapabilityFactory;
     _loaderHelper: Models.ILoaderHelper;
+    _reportHelper: Models.IReportHelper;
+    _reportFactory: Models.IReportFactory;
     
     _capability: Models.ICapability;
     _servers: Array<Models.IServer>;
@@ -38,6 +42,13 @@ export class Patata implements Models.IPatata {
         } 
         return this._capabilityFactory; 
     }
+    
+    private get reportFactory(): Models.IReportFactory { 
+        if (!this._reportFactory) { 
+            this._reportFactory = new ReportFactory.DefaultReportFactory(); 
+        } 
+        return this._reportFactory;
+    }
 
     public get capability(): Models.ICapability { return this._capability; }
     public get servers(): Array<Models.IServer> { return this._servers; }
@@ -55,6 +66,13 @@ export class Patata implements Models.IPatata {
         this._loggers = new Array();
         this._emulator = null;
     }
+    
+    public get reportHelper(): Models.IReportHelper {
+        if (!this._reportHelper) {
+            this._reportHelper = new ReportHelper.ReportHelper();
+        }
+        return this._reportHelper;
+    }
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration|string): Models.IPatata {
         this._currentSuite = this.getSuite(suiteConfigurationArg);        
@@ -64,6 +82,7 @@ export class Patata implements Models.IPatata {
         this._servers = this.obtainServers(this.currentSuite);
         this._emulator = new Emulation.WebDriver(this);
         this._config = this.obtainConfig(this.currentSuite);
+        this._reports = this.obtainReports(this.currentSuite);
         
         return this;
     }
@@ -127,11 +146,13 @@ export class Patata implements Models.IPatata {
         return this;
     }
     
-    private registerReport(report: string | Models.IReport, options: any): Models.IPatata {
-        var Plugin = this.loaderHelper.obtainPlugin(report);        
-        this._reports.push(new Plugin(options));
+    private registerReport(report: string | Models.IReport): Models.IReport {
+        if (!report || report === 'default') {
+            report = './defaults/defaultReport.js';
+        }
         
-        return this;
+        var Plugin = this.loaderHelper.obtainPlugin(report);
+        return <Models.IReport>new Plugin();
     }
     
     private registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
@@ -157,6 +178,23 @@ export class Patata implements Models.IPatata {
     private obtainProvider(suiteConfiguration: Models.ISuiteConfiguration): Models.IProvider {
         suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
         return this.registerProvider(suiteConfiguration.provider.package, suiteConfiguration.provider);   
+    }
+    
+    private obtainReports(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IReport> {
+        var result = new Array<Models.IReport>();
+        suiteConfiguration.reports = suiteConfiguration.reports || [];
+        suiteConfiguration.reports.forEach(report => {
+            // If the reporter is registered inside patata, use this module instead
+            // Eg. json => ./defaults/jsonReport
+            let defaultReporter = this.reportFactory.getByName(report);
+            if (defaultReporter) {
+                report = defaultReporter;
+            }
+            let toAdd = this.registerReport(report);
+            result.push(toAdd);
+        });
+        this.emulator.registerReports(result);
+        return result;
     }
 
     private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {
