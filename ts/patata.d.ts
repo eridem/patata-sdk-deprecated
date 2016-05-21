@@ -10,12 +10,17 @@ export interface IPatata {
     loggers: Array<ILogger>;
     emulator: IEmulator;    
     config: any;
+    fileUtils: IFileUtils;
     
     init(configuration: ISuiteConfiguration|string): IPatata;
     suite(name: string, suite: ISuiteConfiguration): IPatata;
     getSuite(suiteConfigurationArg: ISuiteConfiguration|string): ISuiteConfiguration;
     component(name: string, fn: any): IPatata;
-    components(components: Array<any>): IPatata;
+    components(components: Array<any>): IPatata;   
+}
+
+export interface IFileUtils {
+    generateResultsFilePath(extension: string);
 }
 
 export interface IFlavour {
@@ -40,7 +45,7 @@ export interface ISuiteConfiguration {
     include: Array<string>;
     features: ISuiteConfigurationFeatures;
     provider: ISuiteProvider;
-    reports: Array<string>;
+    reports: Array<any>;
     servers: Array<IServer>;
     config: any;
 }
@@ -101,7 +106,7 @@ export interface ILoaderHelper {
 }
 
 export interface IReportFactory {
-    getByName(name: string): string;
+    get(name: any): any;
 }
 
 export interface IReportHelper {

@@ -1,8 +1,16 @@
 "use strict";
 const fs = require('fs');
 class JsonReport {
-    constructor() {
+    constructor(opts) {
         this._result = { features: [] };
+        this.validateOptions(opts);
+        this._path = opts.path;
+    }
+    get path() { return this._path; }
+    validateOptions(opts) {
+        if (!opts.path) {
+            throw new Error('[Patata][JsonReport] You need to specify the option "path" with the output file path');
+        }
     }
     fromEmulator(action, meth, path, data) {
         /*if (action === 'http') {
@@ -47,7 +55,7 @@ class JsonReport {
     }
     stepResult(event, callback) {
         let resultAsString = JSON.stringify(this._result);
-        fs.writeFile("./results.json", resultAsString, callback);
+        fs.writeFile(this.path, resultAsString, callback);
     }
 }
 exports.JsonReport = JsonReport;

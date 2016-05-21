@@ -5,6 +5,7 @@ const Capabilities = require('./capabilities');
 const LoaderHelpers = require('./loaderHelper');
 const ReportHelper = require('./reportHelper');
 const ReportFactory = require('./defaults/defaultReportFactory');
+const FileUtils = require('./fileUtils');
 require('./dependencies');
 class Patata {
     constructor() {
@@ -41,6 +42,12 @@ class Patata {
     get loggers() { return this._loggers; }
     get emulator() { return this._emulator; }
     get config() { return this._config; }
+    get fileUtils() {
+        if (!this._fileUtils) {
+            this._fileUtils = new FileUtils.FileUtils();
+        }
+        return this._fileUtils;
+    }
     get reportHelper() {
         if (!this._reportHelper) {
             this._reportHelper = new ReportHelper.ReportHelper();
@@ -107,12 +114,12 @@ class Patata {
         this._suites[name] = this.loaderHelper.loadAsFunctionModuleOrObject(suite);
         return this;
     }
-    registerReport(report) {
+    registerReport(report, options) {
         if (!report || report === 'default') {
             report = './defaults/defaultReport.js';
         }
         var Plugin = this.loaderHelper.obtainPlugin(report);
-        return new Plugin();
+        return new Plugin(options);
     }
     registerLogger(logger, options) {
         var Plugin = this.loaderHelper.obtainPlugin(logger);
@@ -136,14 +143,12 @@ class Patata {
     obtainReports(suiteConfiguration) {
         var result = new Array();
         suiteConfiguration.reports = suiteConfiguration.reports || [];
-        suiteConfiguration.reports.forEach(report => {
-            // If the reporter is registered inside patata, use this module instead
-            // Eg. json => ./defaults/jsonReport
-            let defaultReporter = this.reportFactory.getByName(report);
+        suiteConfiguration.reports.forEach((report) => {
+            let defaultReporter = this.reportFactory.get(report);
             if (defaultReporter) {
                 report = defaultReporter;
             }
-            let toAdd = this.registerReport(report);
+            let toAdd = this.registerReport(report.package, report);
             result.push(toAdd);
         });
         this.emulator.registerReports(result);

@@ -1,10 +1,10 @@
 import * as Models from '../patata.d';
 
 export class DefaultReportFactory implements Models.IReportFactory {
-    public getByName(name: string): string {
-        if (name === 'json') {
-            return './defaults/jsonReport.js';
+    public get(report: any): any {
+        if (report.package === 'json') {
+            report.package = './defaults/jsonReport.js';
         }
-        return null;
+        return report;
     }
 }

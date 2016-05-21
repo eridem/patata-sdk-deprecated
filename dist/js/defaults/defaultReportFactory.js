@@ -1,10 +1,10 @@
 "use strict";
 class DefaultReportFactory {
-    getByName(name) {
-        if (name === 'json') {
-            return './defaults/jsonReport.js';
+    get(report) {
+        if (report.package === 'json') {
+            report.package = './defaults/jsonReport.js';
         }
-        return null;
+        return report;
     }
 }
 exports.DefaultReportFactory = DefaultReportFactory;

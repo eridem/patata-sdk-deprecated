@@ -8,6 +8,22 @@ export class JsonReport implements Models.IReport {
     private _currentScenario: any;
     private _currentStep: any;
     
+    private _path: string;
+    
+    public get path(): string { return this._path; }
+    
+    public constructor(opts: any) {
+        this.validateOptions(opts);
+        
+        this._path = opts.path;
+    }
+    
+    private validateOptions(opts: any) {
+        if (!opts.path) {
+            throw new Error('[Patata][JsonReport] You need to specify the option "path" with the output file path');
+        }
+    }
+    
     public fromEmulator(action: any, meth: any, path: any, data: any): void {
         /*if (action === 'http') {
             console.log('\t> ' + meth.magenta, path, (data || '').grey);
@@ -56,6 +72,6 @@ export class JsonReport implements Models.IReport {
     
     public stepResult(event: any, callback: any): void {
         let resultAsString = JSON.stringify(this._result);
-        fs.writeFile("./results.json", resultAsString, callback);
+        fs.writeFile(this.path, resultAsString, callback);
     }
 }

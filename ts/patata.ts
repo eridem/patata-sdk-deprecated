@@ -8,6 +8,7 @@ import * as Capabilities from './capabilities';
 import * as LoaderHelpers from './loaderHelper';
 import * as ReportHelper from './reportHelper';
 import * as ReportFactory from './defaults/defaultReportFactory';
+import * as FileUtils from './fileUtils';
 
 require('./dependencies');
 
@@ -27,6 +28,8 @@ export class Patata implements Models.IPatata {
     _emulator: Models.IEmulator;
     _config: any;
     
+    _fileUtils: Models.IFileUtils;
+        
     public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
 
     private get loaderHelper(): Models.ILoaderHelper { 
@@ -57,6 +60,13 @@ export class Patata implements Models.IPatata {
     public get loggers(): Array<Models.ILogger> { return this._loggers; }
     public get emulator(): Models.IEmulator { return this._emulator; }
     public get config(): Models.IEmulator { return this._config; }
+    
+    public get fileUtils(): Models.IFileUtils { 
+        if (!this._fileUtils) {
+            this._fileUtils = new FileUtils.FileUtils();
+        }
+        return this._fileUtils;
+    }
     
     constructor() {
         this._suites = new Array();
@@ -145,14 +155,14 @@ export class Patata implements Models.IPatata {
         this._suites[name] = this.loaderHelper.loadAsFunctionModuleOrObject(suite);
         return this;
     }
-    
-    private registerReport(report: string | Models.IReport): Models.IReport {
+        
+    private registerReport(report: string | Models.IReport, options: any): Models.IReport {
         if (!report || report === 'default') {
             report = './defaults/defaultReport.js';
         }
         
         var Plugin = this.loaderHelper.obtainPlugin(report);
-        return <Models.IReport>new Plugin();
+        return <Models.IReport>new Plugin(options);
     }
     
     private registerLogger(logger: string | Models.ILogger, options: any): Models.IPatata {
@@ -183,14 +193,13 @@ export class Patata implements Models.IPatata {
     private obtainReports(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IReport> {
         var result = new Array<Models.IReport>();
         suiteConfiguration.reports = suiteConfiguration.reports || [];
-        suiteConfiguration.reports.forEach(report => {
-            // If the reporter is registered inside patata, use this module instead
-            // Eg. json => ./defaults/jsonReport
-            let defaultReporter = this.reportFactory.getByName(report);
+        
+        suiteConfiguration.reports.forEach((report:any) => {
+            let defaultReporter = this.reportFactory.get(report);
             if (defaultReporter) {
                 report = defaultReporter;
             }
-            let toAdd = this.registerReport(report);
+            let toAdd = this.registerReport(report.package, report);
             result.push(toAdd);
         });
         this.emulator.registerReports(result);
