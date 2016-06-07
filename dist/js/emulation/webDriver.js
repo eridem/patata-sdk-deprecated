@@ -10,7 +10,8 @@ class WebDriver {
         this._desired.app = binary;
         // Init driver
         return this.driver
-            .init(this._desired);
+            .init(this._desired)
+            .setImplicitWaitTimeout(45 * 1000);
     }
     quit() {
         this.driver
