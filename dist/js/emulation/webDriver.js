@@ -10,8 +10,8 @@ var WebDriver = (function () {
         this._desired.app = binary;
         // Init driver
         return this.driver
-            .setImplicitWaitTimeout(30 * 1000)
-            .init(this._desired);
+            .init(this._desired)
+            .setImplicitWaitTimeout(45 * 1000);
     };
     WebDriver.prototype.quit = function () {
         this.driver

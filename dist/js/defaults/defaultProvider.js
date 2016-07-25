@@ -7,10 +7,15 @@ var DefaultProvider = (function () {
         this._patata = patata;
         this._opts = opts;
         if (!this._opts.path) {
-            throw this._patata.log.getError("[Default provider] File cannot be null");
+            throw this.log.getError("[Default provider] File cannot be null");
         }
         return this;
     }
+    Object.defineProperty(DefaultProvider.prototype, "log", {
+        get: function () { return this._patata.log; },
+        enumerable: true,
+        configurable: true
+    });
     DefaultProvider.prototype.getBin = function () {
         var deferred = Q.defer();
         var file = process.cwd() + '/' + this._opts.path;
@@ -19,7 +24,7 @@ var DefaultProvider = (function () {
         }
         catch (err) {
             if (err.code == 'ENOENT') {
-                throw this._patata.log.getError("[Default provider] file not found [" + file + "]");
+                throw this.log.getError("[Default provider] file not found [" + file + "]");
             }
         }
         deferred.resolve(file);

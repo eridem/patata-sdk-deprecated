@@ -35,14 +35,19 @@ The ```patatafile.js``` is a special file that will help us to include our suite
 var patata = require('patata');
 
 patata.suite('suite01', {
-    capability: 'android19',
+    capability: 'android23',
     components: ['components/android'],
     include: ['configs/myBrand', 'implementations/set_01', 'implementations/set_02' ],
     config: {
         username: 'patata',
         password: 'patata'
     },
-    reports: [ 'json' ],
+    reports: [
+        { 
+            package: 'json',
+            path: patata.fileUtils.generateResultsFilePath('json')
+        }
+    ],
     features: {
         files: ['features/set_01', 'features/set_02'],
         tags: ['@tag01,@tag02'], 
@@ -70,6 +75,10 @@ Device API. At the current moment, it is possible the following values:
 - ```ios81```
 - ```android18```
 - ```android19```
+- ```android20```
+- ```android21```
+- ```android22```
+- ```android23```
 
 # Components
 
@@ -235,14 +244,18 @@ At the moment, it exists one plugin for reports:
 ```
 patata.suite('suite01', {
     
-    reports: [ 'json' ],
-    
+    reports: [
+        { 
+            package: 'json',
+            path: patata.fileUtils.generateResultsFilePath('json')
+        }
+    ],
 });
 ```
 
 # Servers
 
-By default, Patata uses the local Appium server, but this can be modified to use one or more servers to test.
+Patata creates a new instance of Appium for itself. If specify the *port* and *host*, these will be used. If those are not specified, a random *port* will be choosen on ```localhost```.
 
 ```
 patata.suite('suite01', {

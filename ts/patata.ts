@@ -133,10 +133,10 @@ export class Patata implements Models.IPatata {
             this.emulator.start(uri).then(() => {
                 deferred.resolve(this);
             }).catch((error) => {
-                throw error;
+                deferred.reject(error);
             });
         }).catch((error) => {
-            throw error;
+            deferred.reject(error);
         });
 
         return deferred.promise;
@@ -208,8 +208,7 @@ export class Patata implements Models.IPatata {
 
     private obtainReports(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IReport> {
         var result = new Array<Models.IReport>();
-        return result;
-        /*suiteConfiguration.reports = suiteConfiguration.reports || [];
+        suiteConfiguration.reports = suiteConfiguration.reports || [];
 
         suiteConfiguration.reports.forEach((report:any) => {
             let defaultReporter = this.reportFactory.get(report);
@@ -220,7 +219,7 @@ export class Patata implements Models.IPatata {
             result.push(toAdd);
         });
         this.emulator.registerReports(result);
-        return result;*/
+        return result;
     }
 
     private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {

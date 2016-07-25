@@ -105,13 +105,13 @@ exports.cli = function (result, patata) {
         //var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/config.js').showConfig();       
 
         // Create appium arguments
-        //var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
+        var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
 
         // Exec appium
-        //appiumApp = require('child_process').exec(cmd);
+        appiumApp = require('child_process').exec(cmd);
 
         var deferred = Q.defer();
-        setTimeout(deferred.resolve, 3000);
+        setTimeout(deferred.resolve, 5000);
         return deferred.promise;
     }
 

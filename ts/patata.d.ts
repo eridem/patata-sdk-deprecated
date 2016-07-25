@@ -122,46 +122,37 @@ export interface IReportHelper {
 }
 
 export interface IFeature {
-    background: any;
     description: string;
-    //featureElements: any;
     keyword: string;
-    //lastFeatureElement: any;
     line: number;
     name: string;
+    scenarioKeyword: Array<string>;
+    stepKeywordByLines: string;
     tags: Array<string>;
     uri: string;
 }
 
 export interface IScenario {
-    background: any;
     description: string;
     keyword: string;
-    //lastStep: any;
     line: number;
+    lines: number;
     name: string;
-    ownTags: any;
-    scenarioOutlineLine: any;
-    //steps: any;
     tags: any;
     uri: string;
-    isScenarioOutline: boolean;
 }
 
 export interface IStep {
-    attachment: any;
-    attachmentContents: any;
-    dataTable: any;
-    docString: any;
+    arguments: any;
     keyword: string;
     line: number;
+    lines: number;
     name: string;
-    //previousStep: any;
     uri: string;
+    uris: string;
     isEventStep: boolean;
     isHidden: boolean;
     isOutcomeStep: boolean;
-    isOutlineStep: boolean;
     isPrecededByEventStep: boolean;
     isPrecededByOutcomeStep: boolean;
     isRepeatingEventStep: boolean;

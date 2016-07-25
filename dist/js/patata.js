@@ -154,10 +154,10 @@ var Patata = (function () {
             _this.emulator.start(uri).then(function () {
                 deferred.resolve(_this);
             }).catch(function (error) {
-                throw error;
+                deferred.reject(error);
             });
         }).catch(function (error) {
-            throw error;
+            deferred.reject(error);
         });
         return deferred.promise;
     };
@@ -216,20 +216,19 @@ var Patata = (function () {
         return this.registerProvider(suiteConfiguration.provider.package, suiteConfiguration.provider);
     };
     Patata.prototype.obtainReports = function (suiteConfiguration) {
+        var _this = this;
         var result = new Array();
-        return result;
-        /*suiteConfiguration.reports = suiteConfiguration.reports || [];
-
-        suiteConfiguration.reports.forEach((report:any) => {
-            let defaultReporter = this.reportFactory.get(report);
+        suiteConfiguration.reports = suiteConfiguration.reports || [];
+        suiteConfiguration.reports.forEach(function (report) {
+            var defaultReporter = _this.reportFactory.get(report);
             if (defaultReporter) {
                 report = defaultReporter;
             }
-            let toAdd = this.registerReport(report.package, report);
+            var toAdd = _this.registerReport(report.package, report);
             result.push(toAdd);
         });
         this.emulator.registerReports(result);
-        return result;*/
+        return result;
     };
     Patata.prototype.obtainServers = function (suiteConfiguration) {
         return suiteConfiguration.servers;

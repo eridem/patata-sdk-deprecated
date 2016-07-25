@@ -7,12 +7,13 @@ var fs = require('fs');
 export class DefaultProvider implements Models.IProvider {
     private _opts: any;
     private _patata: Models.IPatata;
+    private get log(): Models.ILog { return this._patata.log; }
 
     constructor(patata: Models.IPatata, opts: any) {
         this._patata = patata;
         this._opts = opts;
         if (!this._opts.path) {
-            throw this._patata.log.getError(`[Default provider] File cannot be null`);
+            throw this.log.getError(`[Default provider] File cannot be null`);
         }
         return this;
     }
@@ -24,7 +25,7 @@ export class DefaultProvider implements Models.IProvider {
             fs.statSync(file);
         } catch (err) {
             if (err.code == 'ENOENT') {
-                throw this._patata.log.getError(`[Default provider] file not found [${file}]`);
+                throw this.log.getError(`[Default provider] file not found [${file}]`);
             }
         }
         deferred.resolve(file);
