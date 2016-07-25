@@ -10,6 +10,7 @@ import * as ReportHelper from './reportHelper';
 import * as ReportFactory from './defaults/defaultReportFactory';
 import * as FileUtils from './fileUtils';
 
+const Cli = require('./cli');
 require('./dependencies');
 
 export class Patata implements Models.IPatata {
@@ -53,6 +54,7 @@ export class Patata implements Models.IPatata {
         return this._reportFactory;
     }
 
+    public get cli(): any { return Cli.cli; }
     public get capability(): Models.ICapability { return this._capability; }
     public get servers(): Array<Models.IServer> { return this._servers; }
     public get reports(): Array<Models.IReport> { return this._reports; }
@@ -192,18 +194,20 @@ export class Patata implements Models.IPatata {
     
     private obtainReports(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IReport> {
         var result = new Array<Models.IReport>();
-        suiteConfiguration.reports = suiteConfiguration.reports || [];
-        
-        suiteConfiguration.reports.forEach((report:any) => {
-            let defaultReporter = this.reportFactory.get(report);
-            if (defaultReporter) {
-                report = defaultReporter;
-            }
-            let toAdd = this.registerReport(report.package, report);
-            result.push(toAdd);
-        });
-        this.emulator.registerReports(result);
+
         return result;
+        // suiteConfiguration.reports = suiteConfiguration.reports || [];
+        
+        // suiteConfiguration.reports.forEach((report:any) => {
+        //     let defaultReporter = this.reportFactory.get(report);
+        //     if (defaultReporter) {
+        //         report = defaultReporter;
+        //     }
+        //     let toAdd = this.registerReport(report.package, report);
+        //     result.push(toAdd);
+        // });
+        // this.emulator.registerReports(result);
+        // return result;
     }
 
     private obtainServers(suiteConfiguration: Models.ISuiteConfiguration): Array<Models.IServer> {

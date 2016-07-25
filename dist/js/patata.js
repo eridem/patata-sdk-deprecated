@@ -1,14 +1,15 @@
 "use strict";
-const Emulation = require('./emulation/webDriver');
-const Q = require('q');
-const Capabilities = require('./capabilities');
-const LoaderHelpers = require('./loaderHelper');
-const ReportHelper = require('./reportHelper');
-const ReportFactory = require('./defaults/defaultReportFactory');
-const FileUtils = require('./fileUtils');
+var Emulation = require('./emulation/webDriver');
+var Q = require('q');
+var Capabilities = require('./capabilities');
+var LoaderHelpers = require('./loaderHelper');
+var ReportHelper = require('./reportHelper');
+var ReportFactory = require('./defaults/defaultReportFactory');
+var FileUtils = require('./fileUtils');
+var Cli = require('./cli');
 require('./dependencies');
-class Patata {
-    constructor() {
+var Patata = (function () {
+    function Patata() {
         this._suites = new Array();
         this._servers = new Array();
         this._reports = new Array();
@@ -16,45 +17,102 @@ class Patata {
         this._loggers = new Array();
         this._emulator = null;
     }
-    get currentSuite() { return this._currentSuite; }
-    get loaderHelper() {
-        if (!this._loaderHelper) {
-            this._loaderHelper = new LoaderHelpers.LoaderHelper();
-        }
-        return this._loaderHelper;
-    }
-    get capabilityFactory() {
-        if (!this._capabilityFactory) {
-            this._capabilityFactory = new Capabilities.CapabilityFactory();
-        }
-        return this._capabilityFactory;
-    }
-    get reportFactory() {
-        if (!this._reportFactory) {
-            this._reportFactory = new ReportFactory.DefaultReportFactory();
-        }
-        return this._reportFactory;
-    }
-    get capability() { return this._capability; }
-    get servers() { return this._servers; }
-    get reports() { return this._reports; }
-    get provider() { return this._provider; }
-    get loggers() { return this._loggers; }
-    get emulator() { return this._emulator; }
-    get config() { return this._config; }
-    get fileUtils() {
-        if (!this._fileUtils) {
-            this._fileUtils = new FileUtils.FileUtils();
-        }
-        return this._fileUtils;
-    }
-    get reportHelper() {
-        if (!this._reportHelper) {
-            this._reportHelper = new ReportHelper.ReportHelper();
-        }
-        return this._reportHelper;
-    }
-    init(suiteConfigurationArg) {
+    Object.defineProperty(Patata.prototype, "currentSuite", {
+        get: function () { return this._currentSuite; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "loaderHelper", {
+        get: function () {
+            if (!this._loaderHelper) {
+                this._loaderHelper = new LoaderHelpers.LoaderHelper();
+            }
+            return this._loaderHelper;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "capabilityFactory", {
+        get: function () {
+            if (!this._capabilityFactory) {
+                this._capabilityFactory = new Capabilities.CapabilityFactory();
+            }
+            return this._capabilityFactory;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "reportFactory", {
+        get: function () {
+            if (!this._reportFactory) {
+                this._reportFactory = new ReportFactory.DefaultReportFactory();
+            }
+            return this._reportFactory;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "cli", {
+        get: function () { return Cli.cli; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "capability", {
+        get: function () { return this._capability; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "servers", {
+        get: function () { return this._servers; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "reports", {
+        get: function () { return this._reports; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "provider", {
+        get: function () { return this._provider; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "loggers", {
+        get: function () { return this._loggers; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "emulator", {
+        get: function () { return this._emulator; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "config", {
+        get: function () { return this._config; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "fileUtils", {
+        get: function () {
+            if (!this._fileUtils) {
+                this._fileUtils = new FileUtils.FileUtils();
+            }
+            return this._fileUtils;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "reportHelper", {
+        get: function () {
+            if (!this._reportHelper) {
+                this._reportHelper = new ReportHelper.ReportHelper();
+            }
+            return this._reportHelper;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Patata.prototype.init = function (suiteConfigurationArg) {
         this._currentSuite = this.getSuite(suiteConfigurationArg);
         this._capability = this.obtainCapability(this.currentSuite);
         this._provider = this.obtainProvider(this.currentSuite);
@@ -63,8 +121,8 @@ class Patata {
         this._config = this.obtainConfig(this.currentSuite);
         this._reports = this.obtainReports(this.currentSuite);
         return this;
-    }
-    getSuite(suiteConfigurationArg) {
+    };
+    Patata.prototype.getSuite = function (suiteConfigurationArg) {
         var suiteConfiguration;
         if (typeof suiteConfigurationArg === 'string') {
             suiteConfiguration = this._suites[suiteConfigurationArg];
@@ -73,25 +131,26 @@ class Patata {
             suiteConfiguration = suiteConfigurationArg;
         }
         return suiteConfiguration;
-    }
-    start(hook, scenario, implicitWait) {
+    };
+    Patata.prototype.start = function (hook, scenario, implicitWait) {
+        var _this = this;
         var deferred = Q.defer();
         this.attachPatataIntoCucumber(hook);
         if (this._provider === null) {
             throw "You need to attach a provider in order to obtain the file to test.";
         }
-        this._provider.getBin().then((uri) => {
-            this.emulator.start(uri).then(() => {
-                deferred.resolve(this);
+        this._provider.getBin().then(function (uri) {
+            _this.emulator.start(uri).then(function () {
+                deferred.resolve(_this);
             });
         });
         return deferred.promise;
-    }
-    quit() {
+    };
+    Patata.prototype.quit = function () {
         this.emulator.quit();
         return this;
-    }
-    component(name, fn) {
+    };
+    Patata.prototype.component = function (name, fn) {
         if (!name || !fn)
             return this;
         if (this.emulator.driver[name])
@@ -100,74 +159,76 @@ class Patata {
             Object.defineProperty(Object.prototype, name, { get: fn });
         }
         else {
-            this.component(name, () => fn);
+            this.component(name, function () { return fn; });
         }
         return this;
-    }
-    components(components) {
+    };
+    Patata.prototype.components = function (components) {
         for (var attr in components) {
             this.component(attr, components[attr]);
         }
         return this;
-    }
-    suite(name, suite) {
+    };
+    Patata.prototype.suite = function (name, suite) {
         this._suites[name] = this.loaderHelper.loadAsFunctionModuleOrObject(suite);
         return this;
-    }
-    registerReport(report, options) {
+    };
+    Patata.prototype.registerReport = function (report, options) {
         if (!report || report === 'default') {
             report = './defaults/defaultReport.js';
         }
         var Plugin = this.loaderHelper.obtainPlugin(report);
         return new Plugin(options);
-    }
-    registerLogger(logger, options) {
+    };
+    Patata.prototype.registerLogger = function (logger, options) {
         var Plugin = this.loaderHelper.obtainPlugin(logger);
         this._loggers.push(new Plugin(options));
         return this;
-    }
-    registerProvider(provider, options) {
+    };
+    Patata.prototype.registerProvider = function (provider, options) {
         if (!provider || provider === 'default') {
             provider = './defaults/defaultProvider.js';
         }
         var Plugin = this.loaderHelper.obtainPlugin(provider);
         return new Plugin(options);
-    }
-    obtainCapability(suiteConfiguration) {
+    };
+    Patata.prototype.obtainCapability = function (suiteConfiguration) {
         return this.capabilityFactory.getByName(suiteConfiguration.capability);
-    }
-    obtainProvider(suiteConfiguration) {
+    };
+    Patata.prototype.obtainProvider = function (suiteConfiguration) {
         suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
         return this.registerProvider(suiteConfiguration.provider.package, suiteConfiguration.provider);
-    }
-    obtainReports(suiteConfiguration) {
+    };
+    Patata.prototype.obtainReports = function (suiteConfiguration) {
         var result = new Array();
-        suiteConfiguration.reports = suiteConfiguration.reports || [];
-        suiteConfiguration.reports.forEach((report) => {
-            let defaultReporter = this.reportFactory.get(report);
-            if (defaultReporter) {
-                report = defaultReporter;
-            }
-            let toAdd = this.registerReport(report.package, report);
-            result.push(toAdd);
-        });
-        this.emulator.registerReports(result);
         return result;
-    }
-    obtainServers(suiteConfiguration) {
+        // suiteConfiguration.reports = suiteConfiguration.reports || [];
+        // suiteConfiguration.reports.forEach((report:any) => {
+        //     let defaultReporter = this.reportFactory.get(report);
+        //     if (defaultReporter) {
+        //         report = defaultReporter;
+        //     }
+        //     let toAdd = this.registerReport(report.package, report);
+        //     result.push(toAdd);
+        // });
+        // this.emulator.registerReports(result);
+        // return result;
+    };
+    Patata.prototype.obtainServers = function (suiteConfiguration) {
         return suiteConfiguration.servers;
-    }
-    obtainConfig(suiteConfiguration) {
+    };
+    Patata.prototype.obtainConfig = function (suiteConfiguration) {
         var config = suiteConfiguration.config;
         return this.loaderHelper.loadAsFunctionModuleOrObject(config);
-    }
-    attachPatataIntoCucumber(hook) {
+    };
+    Patata.prototype.attachPatataIntoCucumber = function (hook) {
         if (hook) {
             hook.emu = this.emulator.driver;
             hook.config = this.config;
         }
         Object.defineProperty(Object.prototype, 'config', this.config);
         return this;
-    }
-}
+    };
+    return Patata;
+}());
 exports.Patata = Patata;

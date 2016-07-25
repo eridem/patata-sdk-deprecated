@@ -1,6 +1,8 @@
 "use strict";
-class LoaderHelper {
-    loadAsFunctionModuleOrObject(what) {
+var LoaderHelper = (function () {
+    function LoaderHelper() {
+    }
+    LoaderHelper.prototype.loadAsFunctionModuleOrObject = function (what) {
         if (typeof what === 'function') {
             return what();
         }
@@ -8,8 +10,8 @@ class LoaderHelper {
             return require(what);
         }
         return what;
-    }
-    obtainPlugin(what) {
+    };
+    LoaderHelper.prototype.obtainPlugin = function (what) {
         if (typeof what === 'string') {
             var objs = require(what);
             for (var attr in objs) {
@@ -17,6 +19,7 @@ class LoaderHelper {
             }
         }
         return what;
-    }
-}
+    };
+    return LoaderHelper;
+}());
 exports.LoaderHelper = LoaderHelper;

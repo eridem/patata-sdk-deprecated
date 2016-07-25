@@ -1,8 +1,10 @@
 "use strict";
-class ReportHelper {
-    toFeature(event) {
-        let cFeature = event.getPayloadItem('feature');
-        let result = {
+var ReportHelper = (function () {
+    function ReportHelper() {
+    }
+    ReportHelper.prototype.toFeature = function (event) {
+        var cFeature = event.getPayloadItem('feature');
+        var result = {
             background: cFeature.getBackground(),
             description: cFeature.getDescription(),
             //featureElements: cFeature.getFeatureElements(),
@@ -14,10 +16,10 @@ class ReportHelper {
             uri: cFeature.getUri(),
         };
         return result;
-    }
-    toScenario(event) {
-        let cScenario = event.getPayloadItem('scenario');
-        let result = {
+    };
+    ReportHelper.prototype.toScenario = function (event) {
+        var cScenario = event.getPayloadItem('scenario');
+        var result = {
             background: cScenario.getBackground(),
             description: cScenario.getDescription(),
             //lastStep: cScenario.getLastStep(),
@@ -32,10 +34,10 @@ class ReportHelper {
             isScenarioOutline: cScenario.isScenarioOutline()
         };
         return result;
-    }
-    toStep(event) {
-        let cStep = event.getPayloadItem('step');
-        let result = {
+    };
+    ReportHelper.prototype.toStep = function (event) {
+        var cStep = event.getPayloadItem('step');
+        var result = {
             attachment: cStep.getAttachment(),
             attachmentContents: cStep.getAttachmentContents(),
             dataTable: cStep.getDataTable(),
@@ -55,6 +57,7 @@ class ReportHelper {
             isRepeatingOutcomeStep: cStep.isRepeatingOutcomeStep(),
         };
         return result;
-    }
-}
+    };
+    return ReportHelper;
+}());
 exports.ReportHelper = ReportHelper;

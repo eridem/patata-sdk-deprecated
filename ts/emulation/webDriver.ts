@@ -5,7 +5,7 @@ import * as Models from '../patata.d';
 
 export class WebDriver implements Models.IEmulator {
     
-    private _wd: any;
+    private _driver: any;
     private _desired: any;
              
     constructor(patata: Models.IPatata) {
@@ -22,8 +22,8 @@ export class WebDriver implements Models.IEmulator {
         
         // Init driver
         return this.driver
-            .init(this._desired)
             .setImplicitWaitTimeout(45 * 1000)
+            .init(this._desired)
             ;
     }
     
@@ -35,7 +35,7 @@ export class WebDriver implements Models.IEmulator {
     }
     
     public get driver():any {
-        return this._wd;
+        return this._driver;
     }
     
     private buildDriverChain():void {
@@ -45,7 +45,7 @@ export class WebDriver implements Models.IEmulator {
     private setUpServers(servers: Array<Models.IServer>): void {
         for (var attr in servers) {
             var serverConfig = servers[attr];
-            this._wd = require('wd').promiseChainRemote(serverConfig);
+            this._driver = require('wd').promiseChainRemote(serverConfig);
         }
     }
     

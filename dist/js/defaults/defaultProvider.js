@@ -1,15 +1,16 @@
 /// <reference path="../../typings/q/Q.d.ts" />
 "use strict";
-const Q = require('q');
-class DefaultProvider {
-    constructor(opts) {
+var Q = require('q');
+var DefaultProvider = (function () {
+    function DefaultProvider(opts) {
         this._opts = opts;
         return this;
     }
-    getBin() {
+    DefaultProvider.prototype.getBin = function () {
         var deferred = Q.defer();
         deferred.resolve(process.cwd() + '/' + this._opts.path);
         return deferred.promise;
-    }
-}
+    };
+    return DefaultProvider;
+}());
 exports.DefaultProvider = DefaultProvider;

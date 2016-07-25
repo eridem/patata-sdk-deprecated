@@ -1,6 +1,6 @@
 "use strict";
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var should = chai.should();
 module.exports = should;
