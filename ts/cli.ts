@@ -113,7 +113,7 @@ exports.cli = function (result, patata) {
     //
     function createCucumberArgs(patata) {
         // Load Patata support files for Cucumber
-        var supportDir = process.cwd() + '\\node_modules\\patata\\dist\\js\\cucumber\\support\\';
+        var supportDir = process.cwd() + '/node_modules/patata/dist/js/cucumber/support/';
 
         // Create default arguments for cucumber
         var defaultArgs = ['', '', '--require', supportDir];
