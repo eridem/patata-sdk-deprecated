@@ -11,16 +11,22 @@ export interface IPatata {
     emulator: IEmulator;    
     config: any;
     fileUtils: IFileUtils;
-    
+    log: ILog;
+
     init(configuration: ISuiteConfiguration|string): IPatata;
     suite(name: string, suite: ISuiteConfiguration): IPatata;
     getSuite(suiteConfigurationArg: ISuiteConfiguration|string): ISuiteConfiguration;
     component(name: string, fn: any): IPatata;
-    components(components: Array<any>): IPatata;   
+    components(components: Array<any>): IPatata;
 }
 
 export interface IFileUtils {
     generateResultsFilePath(extension: string);
+}
+
+export interface ILog {
+    getErrorMessage(message:string):string;
+    getError(message:string):Error;
 }
 
 export interface IFlavour {

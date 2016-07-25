@@ -1,5 +1,5 @@
 
-import * as Models from '../../patata.d';
+/*import * as Models from '../../patata.d';
 
 let reporter = function() {      
     class CallBackCounter {
@@ -112,4 +112,4 @@ let reporter = function() {
     });
 }
 
-export = reporter;
+export = reporter;*/

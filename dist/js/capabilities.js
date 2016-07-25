@@ -26,16 +26,60 @@ var android19 = (function () {
     }
     return android19;
 }());
+var android20 = (function () {
+    function android20() {
+        this.platformName = "Android";
+        this.platformVersion = "4.4W.2";
+        this.deviceName = "Android Emulator";
+        this.app = "";
+    }
+    return android20;
+}());
+var android21 = (function () {
+    function android21() {
+        this.platformName = "Android";
+        this.platformVersion = "5.0.1";
+        this.deviceName = "Android Emulator";
+        this.app = "";
+    }
+    return android21;
+}());
+var android22 = (function () {
+    function android22() {
+        this.platformName = "Android";
+        this.platformVersion = "5.1.1";
+        this.deviceName = "Android Emulator";
+        this.app = "";
+    }
+    return android22;
+}());
+var android23 = (function () {
+    function android23() {
+        this.platformName = "Android";
+        this.platformVersion = "6.0";
+        this.deviceName = "Android Emulator";
+        this.app = "";
+    }
+    return android23;
+}());
 var CapabilityFactory = (function () {
     function CapabilityFactory() {
         this._capabilities = {
             ios81: new ios81(),
             android18: new android18(),
-            android19: new android19()
+            android19: new android19(),
+            android20: new android20(),
+            android21: new android21(),
+            android22: new android22(),
+            android23: new android23(),
         };
     }
     CapabilityFactory.prototype.getByName = function (name) {
-        return this._capabilities[name];
+        var capability = this._capabilities[name];
+        if (!capability) {
+            throw new Error("Capability not found.");
+        }
+        return capability;
     };
     return CapabilityFactory;
 }());

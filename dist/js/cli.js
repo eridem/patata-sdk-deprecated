@@ -4,6 +4,17 @@ var getPort = require('get-port');
 var colors = require('colors');
 var appiumApp;
 exports.cli = function (result, patata) {
+    function exitHandler(options, err) {
+        stopAppium();
+        if (options.exit)
+            process.exit();
+    }
+    //do something when app is closing
+    process.on('exit', exitHandler.bind(null, { cleanup: true }));
+    //catches ctrl+c event
+    process.on('SIGINT', exitHandler.bind(null, { exit: true }));
+    //catches uncaught exceptions
+    process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
     printLogo();
     var argv = require('yargs').argv;
     if (argv._.length === 0) {
@@ -35,28 +46,31 @@ exports.cli = function (result, patata) {
     //
     function fixDefaultValues(patata, suiteCli) {
         var deferred = Q.defer();
-        getPort().then(function (port) {
-            // Current suite
-            var currentSuite = patata.getSuite(suiteCli);
-            // Fix features default values
-            currentSuite.features = currentSuite.features || {};
-            currentSuite.features.files = currentSuite.features.files || [];
-            currentSuite.features.tags = currentSuite.features.tags || [];
-            currentSuite.features.scenarios = currentSuite.features.scenarios || [];
-            // Reports
-            currentSuite.reports = currentSuite.reports || [];
-            // Fix server default values
-            currentSuite.servers =
-                currentSuite.servers && currentSuite.servers.length ?
-                    currentSuite.servers :
-                    [{ host: 'localhost', port: port }];
+        // Current suite
+        var currentSuite = patata.getSuite(suiteCli);
+        // Fix features default values
+        currentSuite.features = currentSuite.features || {};
+        currentSuite.features.files = currentSuite.features.files || [];
+        currentSuite.features.tags = currentSuite.features.tags || [];
+        currentSuite.features.scenarios = currentSuite.features.scenarios || [];
+        // Reports
+        currentSuite.reports = currentSuite.reports || [];
+        var afterAssignPort = function (currentSuite) {
             // Replace previous suite with complete values
             patata.suite(suiteCli, currentSuite);
             // Return
             deferred.resolve(patata);
-        }).catch(function (error) {
-            exitWithError(error);
-        });
+        };
+        // Fix server default values
+        if (currentSuite.servers && currentSuite.servers.length) {
+            afterAssignPort(currentSuite);
+        }
+        else {
+            getPort().then(function (port) {
+                currentSuite.servers = [{ host: 'localhost', port: port }];
+                afterAssignPort(currentSuite);
+            });
+        }
         return deferred.promise;
     }
     //
@@ -65,8 +79,7 @@ exports.cli = function (result, patata) {
     function startAppium(currentSuite) {
         // User first server (TODO: be able to use more servers)
         var server = currentSuite.servers[0];
-        //var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/config.js').showConfig();
-        //console.log(appiumArgs);
+        //var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/config.js').showConfig();       
         // Create appium arguments
         //var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
         // Exec appium
@@ -77,7 +90,9 @@ exports.cli = function (result, patata) {
     }
     function stopAppium() {
         if (appiumApp && typeof appiumApp.exit === 'function') {
+            console.log("Stopping Appium...");
             appiumApp.exit();
+            console.log("Appium stopped...");
         }
     }
     //
@@ -86,7 +101,7 @@ exports.cli = function (result, patata) {
     //
     function createCucumberArgs(patata) {
         // Load Patata support files for Cucumber
-        var supportDir = process.cwd() + '\\node_modules\\patata\\dist\\js\\cucumber\\support\\';
+        var supportDir = process.cwd() + '/node_modules/patata/dist/js/cucumber/support/';
         // Create default arguments for cucumber
         var defaultArgs = ['', '', '--require', supportDir];
         var featureFilesArgs = buildWithArgs('', patata.currentSuite.features.files, '');
@@ -113,6 +128,7 @@ exports.cli = function (result, patata) {
         var Cucumber = require('cucumber');
         var cucumberCli = Cucumber.Cli(args);
         var cucumberCliAction = function (succeeded) {
+            stopAppium();
             var code = succeeded ? 0 : 1;
             function exitNow() {
                 process.exit(code);
@@ -125,11 +141,7 @@ exports.cli = function (result, patata) {
                 process.stdout.on('drain', exitNow);
             }
         };
-        cucumberCli.run(cucumberCliAction).then(function () {
-            stopAppium();
-        }).catch(function (error) {
-            exitWithError(error);
-        });
+        cucumberCli.run(cucumberCliAction);
     }
     //
     // Create an cli arguments based on an array and prefix. If not prefix, pass null.
@@ -153,14 +165,21 @@ exports.cli = function (result, patata) {
         process.exit(1);
     }
     function printMessage(patata, args) {
-        console.log("Cucumber:".cyan, "\t\t" + args.toString());
-        console.log("Tags:".cyan, "\t\t " + patata.currentSuite.features.tags);
-        console.log("Scenarios:".cyan, "\t " + patata.currentSuite.features.scenarios);
-        console.log("Components:".cyan, "\t " + patata.currentSuite.components);
-        console.log("Include:".cyan, "\t " + patata.currentSuite.include);
-        console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
-        console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
-        console.log("\n");
+        try {
+            console.log("Tags:".cyan, "\t\t " + patata.currentSuite.features.tags);
+            console.log("Scenarios:".cyan, "\t " + patata.currentSuite.features.scenarios);
+            console.log("Components:".cyan, "\t " + patata.currentSuite.components);
+            console.log("Include:".cyan, "\t " + patata.currentSuite.include);
+            console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
+            console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
+            console.log("\n");
+            console.log('Appium: ', "\t" + JSON.stringify(patata.currentSuite.servers));
+            console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
+            console.log("\n");
+        }
+        catch (ex) {
+            console.warn('There was a problem showing summary messages.');
+        }
     }
     function printLogo() {
         console.log("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\n".yellow +

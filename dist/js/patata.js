@@ -6,6 +6,7 @@ var LoaderHelpers = require('./loaderHelper');
 var ReportHelper = require('./reportHelper');
 var ReportFactory = require('./defaults/defaultReportFactory');
 var FileUtils = require('./fileUtils');
+var Log = require('./log');
 var Cli = require('./cli');
 require('./dependencies');
 var Patata = (function () {
@@ -88,7 +89,7 @@ var Patata = (function () {
         configurable: true
     });
     Object.defineProperty(Patata.prototype, "config", {
-        get: function () { return this._config; },
+        get: function () { return this._config || {}; },
         enumerable: true,
         configurable: true
     });
@@ -98,6 +99,16 @@ var Patata = (function () {
                 this._fileUtils = new FileUtils.FileUtils();
             }
             return this._fileUtils;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Patata.prototype, "log", {
+        get: function () {
+            if (!this._log) {
+                this._log = new Log.Log();
+            }
+            return this._log;
         },
         enumerable: true,
         configurable: true
@@ -142,7 +153,11 @@ var Patata = (function () {
         this._provider.getBin().then(function (uri) {
             _this.emulator.start(uri).then(function () {
                 deferred.resolve(_this);
+            }).catch(function (error) {
+                throw error;
             });
+        }).catch(function (error) {
+            throw error;
         });
         return deferred.promise;
     };
@@ -190,10 +205,11 @@ var Patata = (function () {
             provider = './defaults/defaultProvider.js';
         }
         var Plugin = this.loaderHelper.obtainPlugin(provider);
-        return new Plugin(options);
+        return new Plugin(this, options);
     };
     Patata.prototype.obtainCapability = function (suiteConfiguration) {
-        return this.capabilityFactory.getByName(suiteConfiguration.capability);
+        var result = this.capabilityFactory.getByName(suiteConfiguration.capability);
+        return result;
     };
     Patata.prototype.obtainProvider = function (suiteConfiguration) {
         suiteConfiguration.provider.package = suiteConfiguration.provider.package || 'default';
@@ -202,17 +218,18 @@ var Patata = (function () {
     Patata.prototype.obtainReports = function (suiteConfiguration) {
         var result = new Array();
         return result;
-        // suiteConfiguration.reports = suiteConfiguration.reports || [];
-        // suiteConfiguration.reports.forEach((report:any) => {
-        //     let defaultReporter = this.reportFactory.get(report);
-        //     if (defaultReporter) {
-        //         report = defaultReporter;
-        //     }
-        //     let toAdd = this.registerReport(report.package, report);
-        //     result.push(toAdd);
-        // });
-        // this.emulator.registerReports(result);
-        // return result;
+        /*suiteConfiguration.reports = suiteConfiguration.reports || [];
+
+        suiteConfiguration.reports.forEach((report:any) => {
+            let defaultReporter = this.reportFactory.get(report);
+            if (defaultReporter) {
+                report = defaultReporter;
+            }
+            let toAdd = this.registerReport(report.package, report);
+            result.push(toAdd);
+        });
+        this.emulator.registerReports(result);
+        return result;*/
     };
     Patata.prototype.obtainServers = function (suiteConfiguration) {
         return suiteConfiguration.servers;

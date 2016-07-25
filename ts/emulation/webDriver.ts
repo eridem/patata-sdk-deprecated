@@ -22,7 +22,7 @@ export class WebDriver implements Models.IEmulator {
         
         // Init driver
         return this.driver
-            .setImplicitWaitTimeout(45 * 1000)
+            .setImplicitWaitTimeout(30 * 1000)
             .init(this._desired)
             ;
     }

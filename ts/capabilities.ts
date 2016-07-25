@@ -21,14 +21,50 @@ class android19 implements Models.ICapability {
     public app: string                = "";
 }
 
+class android20 implements Models.ICapability {
+    public platformName: string       = "Android";
+    public platformVersion: string    = "4.4W.2";
+    public deviceName: string         = "Android Emulator";
+    public app: string                = "";
+}
+
+class android21 implements Models.ICapability {
+    public platformName: string       = "Android";
+    public platformVersion: string    = "5.0.1";
+    public deviceName: string         = "Android Emulator";
+    public app: string                = "";
+}
+
+class android22 implements Models.ICapability {
+    public platformName: string       = "Android";
+    public platformVersion: string    = "5.1.1";
+    public deviceName: string         = "Android Emulator";
+    public app: string                = "";
+}
+
+class android23 implements Models.ICapability {
+    public platformName: string       = "Android";
+    public platformVersion: string    = "6.0";
+    public deviceName: string         = "Android Emulator";
+    public app: string                = "";
+}
+
 export class CapabilityFactory implements Models.ICapabilityFactory {
     _capabilities = { 
         ios81: new ios81(), 
         android18: new android18(), 
-        android19: new android19() 
+        android19: new android19(),
+        android20: new android20(),
+        android21: new android21(),
+        android22: new android22(),
+        android23: new android23(),
     };
     
     public getByName(name: string): Models.ICapability {
-        return this._capabilities[name];
+        var capability = this._capabilities[name];
+        if (!capability) {
+            throw new Error("Capability not found.");
+        }
+        return capability;
     }
 }
