@@ -2,6 +2,7 @@
 var Q = require('q');
 var getPort = require('get-port');
 var colors = require('colors');
+var extend = require('util')._extend;
 var appiumApp;
 exports.cli = function (result, patata) {
     function exitHandler(options, err) {
@@ -26,12 +27,12 @@ exports.cli = function (result, patata) {
     fixDefaultValues(patata, suiteCli).then(function (patata) {
         // Current suite
         var currentSuite = patata.getSuite(suiteCli);
+        // Init suite
+        patata.init(suiteCli);
+        // Create cucumber args
+        var cucumberArgs = createCucumberArgs(patata);
         // Start appium
         startAppium(currentSuite).then(function () {
-            // Init suite
-            patata.init(suiteCli);
-            // Create cucumber args
-            var cucumberArgs = createCucumberArgs(patata);
             // Init cucumber with args
             startCucumber(cucumberArgs);
         }).catch(function (error) {
@@ -56,12 +57,16 @@ exports.cli = function (result, patata) {
         // Reports
         currentSuite.reports = currentSuite.reports || [];
         var afterAssignPort = function (currentSuite) {
+            // Fix port=address
+            currentSuite.servers.forEach(function (server) {
+                server.host = server.host || server.address;
+            });
             // Replace previous suite with complete values
             patata.suite(suiteCli, currentSuite);
             // Return
             deferred.resolve(patata);
         };
-        // Fix server default values
+        // Fix server default values        
         if (currentSuite.servers && currentSuite.servers.length) {
             afterAssignPort(currentSuite);
         }
@@ -79,11 +84,17 @@ exports.cli = function (result, patata) {
     function startAppium(currentSuite) {
         // User first server (TODO: be able to use more servers)
         var server = currentSuite.servers[0];
-        //var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/config.js').showConfig();       
+        var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();
+        appiumArgs.address = server.host;
+        appiumArgs.port = server.port;
+        appiumArgs.debugLogSpacing = true;
+        appiumArgs.loglevel = 'warning';
+        server = extend(appiumArgs, server);
+        require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
         // Create appium arguments
-        var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
+        //var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
         // Exec appium
-        appiumApp = require('child_process').exec(cmd);
+        //appiumApp = require('child_process').exec(cmd);
         var deferred = Q.defer();
         setTimeout(deferred.resolve, 5000);
         return deferred.promise;

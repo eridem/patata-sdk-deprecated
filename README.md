@@ -56,7 +56,7 @@ patata.suite('suite01', {
     provider: {
         path: 'apps/test.apk'
     },
-    servers: [{ host: 'localhost', port: 4723 }]    /* Optional */
+    servers: [{ host: 'localhost', port: 4723, loglevel: 'debug' }]    /* Optional */
 });
 ```
 
@@ -255,12 +255,34 @@ patata.suite('suite01', {
 
 # Servers
 
-Patata creates a new instance of Appium for itself. If specify the *port* and *host*, these will be used. If those are not specified, a random *port* will be choosen on ```localhost```.
+Patata creates a new instance of Appium for itself. In this section, you can specify the Appium arguments to use. Those can be found on:
 
+<https://github.com/appium/appium/blob/master/lib/parser.js>
+
+For each item, the value, we find the name under the attribute ```dest```:
+
+```
+E.g. --log-level should be 'loglevel'
+
+  [['--log-level'], {
+    choices: ['info', 'info:debug', 'info:info', 'info:warn', 'info:error',
+              'warn', 'warn:debug', 'warn:info', 'warn:warn', 'warn:error',
+              'error', 'error:debug', 'error:info', 'error:warn', 'error:error',
+              'debug', 'debug:debug', 'debug:info', 'debug:warn', 'debug:error'],
+    defaultValue: 'debug',
+    dest: 'loglevel',      <=========== THIS ONE (loglevel)
+    required: false,
+    example: 'debug',
+    help: 'log level; default (console[:file]): debug[:debug]',
+  }],
+
+```
+
+Example:
 ```
 patata.suite('suite01', {
     
-    servers: [{ host: 'localhost', port: 4723 }],
+    servers: [{ host: 'localhost', port: 4723, loglevel: 'debug' }],
         
 });
 ```
