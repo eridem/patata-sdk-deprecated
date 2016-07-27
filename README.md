@@ -255,7 +255,31 @@ patata.suite('suite01', {
 
 # Servers
 
-Patata creates a new instance of Appium for itself. In this section, you can specify the Appium arguments to use. Those can be found on:
+Patata creates a new instance of Appium for itself. In this section, you can specify the Appium arguments to use*. 
+
+Example:
+
+```
+patata.suite('suite01', {
+    
+    servers: [{ host: 'localhost', port: 4723, loglevel: 'debug' }],
+        
+});
+```
+
+You can use ```attach``` if you have an already Appium server in background.
+
+```
+patata.suite('suite01', {
+    
+    servers: [{ attach: true, host: 'localhost', port: 4723, loglevel: 'debug' }],
+        
+});
+```
+
+## *Appium arguments
+
+Those can be found on:
 
 <https://github.com/appium/appium/blob/master/lib/parser.js>
 
@@ -276,13 +300,4 @@ E.g. --log-level should be 'loglevel'
     help: 'log level; default (console[:file]): debug[:debug]',
   }],
 
-```
-
-Example:
-```
-patata.suite('suite01', {
-    
-    servers: [{ host: 'localhost', port: 4723, loglevel: 'debug' }],
-        
-});
 ```

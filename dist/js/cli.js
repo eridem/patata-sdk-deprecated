@@ -84,17 +84,15 @@ exports.cli = function (result, patata) {
     function startAppium(currentSuite) {
         // User first server (TODO: be able to use more servers)
         var server = currentSuite.servers[0];
-        var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();
-        appiumArgs.address = server.host;
-        appiumArgs.port = server.port;
-        appiumArgs.debugLogSpacing = true;
-        appiumArgs.loglevel = 'warning';
-        server = extend(appiumArgs, server);
-        require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
-        // Create appium arguments
-        //var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
-        // Exec appium
-        //appiumApp = require('child_process').exec(cmd);
+        if (!server.attach) {
+            var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();
+            appiumArgs.address = server.host;
+            appiumArgs.port = server.port;
+            appiumArgs.debugLogSpacing = true;
+            appiumArgs.loglevel = 'warning';
+            server = extend(appiumArgs, server);
+            require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
+        }
         var deferred = Q.defer();
         setTimeout(deferred.resolve, 5000);
         return deferred.promise;
