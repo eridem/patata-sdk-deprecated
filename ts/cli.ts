@@ -15,13 +15,13 @@ exports.cli = function (result, patata) {
     }
 
     //do something when app is closing
-    process.on('exit', exitHandler.bind(null,{cleanup:true}));
+    process.on('exit', exitHandler.bind(null, { cleanup: true }));
 
     //catches ctrl+c event
-    process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+    process.on('SIGINT', exitHandler.bind(null, { exit: true }));
 
     //catches uncaught exceptions
-    process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+    process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
     printLogo();
 
@@ -34,18 +34,18 @@ exports.cli = function (result, patata) {
     var suiteCli = argv._[0];
 
     // Fix default values
-    fixDefaultValues(patata, suiteCli).then(function(patata: Models.IPatata) {
+    fixDefaultValues(patata, suiteCli).then(function (patata: Models.IPatata) {
         // Current suite
         var currentSuite = patata.getSuite(suiteCli);
 
-            // Init suite
-            patata.init(suiteCli);
+        // Init suite
+        patata.init(suiteCli);
 
-            // Create cucumber args
-            var cucumberArgs = createCucumberArgs(patata);
+        // Create cucumber args
+        var cucumberArgs = createCucumberArgs(patata);
 
         // Start appium
-        startAppium(currentSuite).then(function() {
+        startAppium(currentSuite).then(function () {
 
 
             // Init cucumber with args
@@ -77,29 +77,58 @@ exports.cli = function (result, patata) {
         // Reports
         currentSuite.reports = currentSuite.reports || [];
 
-        var afterAssignPort = (currentSuite) => {
+        var afterAssignPort = function (currentSuite) {
             // Fix port=address
-            currentSuite.servers.forEach((server) => {
+            currentSuite.servers.forEach(function (server) {
                 server.host = server.host || server.address;
             });
-
             // Replace previous suite with complete values
             patata.suite(suiteCli, currentSuite);
-
             // Return
             deferred.resolve(patata);
         };
+        var fixPort = function (server) {
+            var fixPortDeferred = Q.defer();
+
+            if (!server.port) {
+                getPort().then(function (port) {
+                    server.port = port;
+                    fixPortDeferred.resolve(server);
+                });
+            } else {
+                fixPortDeferred.resolve(server);
+            }
+
+            return fixPortDeferred.promise;
+        }
 
         // Fix server default values        
         if (currentSuite.servers && currentSuite.servers.length) {
-            afterAssignPort(currentSuite);
-        } else {
-            getPort().then(function (port) {
-                currentSuite.servers = [{ host: 'localhost', port: port }];
+            var portPromises = [];
+            currentSuite.servers.forEach(function (server) {
+                portPromises.push(fixPort(server));
+            });
+
+            Q.allSettled(portPromises).then(function (results) {
+                var newServers = [];
+                results.forEach(function (result) {
+                    if (result.state === "fulfilled") {
+                        newServers.push(result.value);
+                    } else {
+                        throw new Error('[Patata] Could not resolve one of the Appium servers. Please try again or verify your settings.');
+                    }
+                });
+
+                currentSuite.servers = newServers;
                 afterAssignPort(currentSuite);
             });
         }
-
+        else {
+            fixPort({ host: 'localhost', port: null }).then(function (server) {
+                currentSuite.servers = [server];
+                afterAssignPort(currentSuite);
+            });
+        }
         return deferred.promise;
     }
 
@@ -110,19 +139,16 @@ exports.cli = function (result, patata) {
         // User first server (TODO: be able to use more servers)
         var server = currentSuite.servers[0];
 
-        var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();       
-        appiumArgs.address = server.host;
-        appiumArgs.port = server.port;
-        appiumArgs.debugLogSpacing = true;
-        appiumArgs.loglevel = 'warning';
-        server = extend(appiumArgs, server);
+        if (!server.attach) {
+            var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();
+            appiumArgs.address = server.host;
+            appiumArgs.port = server.port;
+            appiumArgs.debugLogSpacing = true;
+            appiumArgs.loglevel = 'warning';
+            server = extend(appiumArgs, server);
 
-        require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
-        // Create appium arguments
-        //var cmd = 'appium -p ' + server.port + ' -a ' + server.host;
-
-        // Exec appium
-        //appiumApp = require('child_process').exec(cmd);
+            require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
+        }
 
         var deferred = Q.defer();
         setTimeout(deferred.resolve, 5000);
