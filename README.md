@@ -13,8 +13,8 @@ npm install --save patata
 
 # Patata keywords
 
-- *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
 - *[Components](#markdown-header-components)*: specific device UI elements.
+- *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
 - *[Include](#markdown-header-include)*: set of files where the implementation of the tests are.
 - *[Config](#markdown-header-config)*: set of custom configurations which we can use on our tests or components.
 - *[Features](#markdown-header-features)*: set of behaviors to test.
@@ -67,18 +67,6 @@ Based on the previous ```patatafile.js``` example, open your terminal and write:
 ```
 patata suite01
 ```
-
-# Capabilities
-
-Device API. At the current moment, it is possible the following values:
-
-- ```ios81```
-- ```android18```
-- ```android19```
-- ```android20```
-- ```android21```
-- ```android22```
-- ```android23```
 
 # Components
 
@@ -140,7 +128,55 @@ patata.suite('suite01', {
 
 You can decide how to split and organize your components files and folders.
 
-# Include
+# Capabilities (```patatafile.js```)
+
+Device API version. It allows both API versions and OS versions:
+
+| API version | OS Version |
+|:- |:-|
+| ```ios81``` | ```ios-8.1``` |
+| ```ios92``` | ```ios-9.2``` |
+| ```android18``` | ```android-4.3``` |
+| ```android19``` | ```android-4.4.2``` |
+| ```android20xx``` | ```android-4.4W.2``` |
+| ```android21``` | ```android-5.0.1``` |
+| ```android22``` | ```android-5.1.1``` |
+| ```android23``` | ```android-6.0``` |
+
+We can use the string value from this list or customize our own capabilities based on the [Capabilities Appium documentation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps.md).
+
+E.g.:
+
+```
+patata.suite('suite01', {
+    
+    capabilities: 'android23',
+    
+});
+```
+
+```
+patata.suite('suite01', {
+    
+    capabilities: 'android-6.0',
+    
+});
+```
+
+```
+patata.suite('suite01', {
+    
+    capabilities: {
+        browserName: 'Safari',
+        platformName: 'iOS',
+        platformVersion: '9.2',
+        deviceName: 'iPhone 5s'
+    },
+    
+});
+```
+
+# Include (```patatafile.js```)
 
 Set of folders or files where the test implementations are. As well, this can be used to fetch configuration files.
 
@@ -152,7 +188,7 @@ patata.suite('suite01', {
 });
 ```
 
-# Config
+# Config (```patatafile.js```)
 
 We can bypass an object to our tests from the ```patatafile.js```.
 
@@ -187,7 +223,7 @@ var passwordValue = patata.config.password;
 
 
 
-# Features
+# Features (```patatafile.js```)
 
 Features can be organized in folders, files, tags or scenarios. Those can be referenced on the ```patatafile.js```.
 
@@ -216,7 +252,7 @@ patata.suite('suite01', {
 
 More info here about features, scenarios and tags: [CucumberJS](https://github.com/cucumber/cucumber-js)
 
-# Providers
+# Providers (```patatafile.js```)
 
 Providers will help us to fetch the binary file.
 
@@ -233,7 +269,7 @@ patata.suite('suite01', {
 ```
 
 
-# Reports
+# Reports (```patatafile.js```)
 
 Providers will create a summary of the tests. They have a lot of possibilities, from output on the screen, to a file, CI tools, Slack, ... .
 
@@ -253,7 +289,7 @@ patata.suite('suite01', {
 });
 ```
 
-# Servers
+# Servers (```patatafile.js```)
 
 Patata creates a new instance of Appium for itself. In this section, you can specify the Appium arguments to use. Those can be found on:
 

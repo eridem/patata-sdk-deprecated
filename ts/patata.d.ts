@@ -91,7 +91,7 @@ export interface ICapability {
 }
 
 export interface ICapabilityFactory {
-    getByName(name: string): ICapability;
+    getByName(name: string | any): ICapability;
 }
 
 export interface IServer {
