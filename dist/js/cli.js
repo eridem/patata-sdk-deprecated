@@ -66,13 +66,42 @@ exports.cli = function (result, patata) {
             // Return
             deferred.resolve(patata);
         };
+        var fixPort = function (server) {
+            var fixPortDeferred = Q.defer();
+            if (!server.port) {
+                getPort().then(function (port) {
+                    server.port = port;
+                    fixPortDeferred.resolve(server);
+                });
+            }
+            else {
+                fixPortDeferred.resolve(server);
+            }
+            return fixPortDeferred.promise;
+        };
         // Fix server default values        
         if (currentSuite.servers && currentSuite.servers.length) {
-            afterAssignPort(currentSuite);
+            var portPromises = [];
+            currentSuite.servers.forEach(function (server) {
+                portPromises.push(fixPort(server));
+            });
+            Q.allSettled(portPromises).then(function (results) {
+                var newServers = [];
+                results.forEach(function (result) {
+                    if (result.state === "fulfilled") {
+                        newServers.push(result.value);
+                    }
+                    else {
+                        throw new Error('[Patata] Could not resolve one of the Appium servers. Please try again or verify your settings.');
+                    }
+                });
+                currentSuite.servers = newServers;
+                afterAssignPort(currentSuite);
+            });
         }
         else {
-            getPort().then(function (port) {
-                currentSuite.servers = [{ host: 'localhost', port: port }];
+            fixPort({ host: 'localhost', port: null }).then(function (server) {
+                currentSuite.servers = [server];
                 afterAssignPort(currentSuite);
             });
         }
