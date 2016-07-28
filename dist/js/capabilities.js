@@ -111,9 +111,10 @@ var CapabilityFactory = (function () {
     CapabilityFactory.prototype.setCapabilitiesFriendlyNames = function () {
         var capabilitiesWithFriendlyNames = {};
         for (var capName in this._capabilities) {
+            var friendlyName = (capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase();
             var capability = this._capabilities[capName];
             capabilitiesWithFriendlyNames[capName] = capability;
-            capabilitiesWithFriendlyNames[(capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase()];
+            capabilitiesWithFriendlyNames[friendlyName] = capability;
         }
         this._capabilities = capabilitiesWithFriendlyNames;
     };
