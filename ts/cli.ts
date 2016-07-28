@@ -255,8 +255,9 @@ exports.cli = function (result, patata) {
             console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
             console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
             console.log("\n");
-            console.log('Appium: ', "\t" + JSON.stringify(patata.currentSuite.servers));
+            console.log('Appium: ', "\t" + JSON.stringify(patata.currentSuite.servers));            
             console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
+            console.log("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability));
             console.log("\n");
         } catch (ex) {
             console.warn('There was a problem showing summary messages.');

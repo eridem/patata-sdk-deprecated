@@ -213,6 +213,7 @@ exports.cli = function (result, patata) {
             console.log("\n");
             console.log('Appium: ', "\t" + JSON.stringify(patata.currentSuite.servers));
             console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
+            console.log("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability));
             console.log("\n");
         }
         catch (ex) {

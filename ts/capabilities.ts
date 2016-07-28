@@ -1,7 +1,7 @@
 import * as Models from './patata.d';
+const extend = require('util')._extend;
 
 class ios81 implements Models.ICapability {
-    public browserName: string = "Safari";
     public platformName: string = "iOS";
     public platformVersion: string = "8.1";
     public deviceName: string = "iPhone Simulator";
@@ -9,7 +9,6 @@ class ios81 implements Models.ICapability {
 }
 
 class ios92 implements Models.ICapability {
-    public browserName: string = "Safari";
     public platformName: string = "iOS";
     public platformVersion: string = "9.2";
     public deviceName: string = "iPhone Simulator";
@@ -17,7 +16,6 @@ class ios92 implements Models.ICapability {
 }
 
 class android18 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "4.3";
     public deviceName: string = "Android Emulator";
@@ -25,7 +23,6 @@ class android18 implements Models.ICapability {
 }
 
 class android19 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "4.4.2";
     public deviceName: string = "Android Emulator";
@@ -33,7 +30,6 @@ class android19 implements Models.ICapability {
 }
 
 class android20 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "4.4W.2";
     public deviceName: string = "Android Emulator";
@@ -41,7 +37,6 @@ class android20 implements Models.ICapability {
 }
 
 class android21 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "5.0.1";
     public deviceName: string = "Android Emulator";
@@ -49,7 +44,6 @@ class android21 implements Models.ICapability {
 }
 
 class android22 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "5.1.1";
     public deviceName: string = "Android Emulator";
@@ -57,7 +51,6 @@ class android22 implements Models.ICapability {
 }
 
 class android23 implements Models.ICapability {
-    public browserName: string = "Chrome";
     public platformName: string = "Android";
     public platformVersion: string = "6.0";
     public deviceName: string = "Android Emulator";
@@ -82,13 +75,17 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
 
     public getByName(name: string | any): Models.ICapability {
         if (typeof name === 'string') {
-            var capability = this._capabilities[name];
-        } else if (capability) {
-            capability = name;
+            return this._capabilities[name];
+        } else if (name) {
+            if (name.template && name.append) {
+                var template = this._capabilities[name.template];
+                var append = name.append;
+                return extend(template, append);
+            }
+            return name;
         } else {
             throw new Error("Capability not found.");
         }
-        return capability;
     }
 
     /**

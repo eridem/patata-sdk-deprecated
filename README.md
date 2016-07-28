@@ -15,6 +15,9 @@ npm install --save patata
 
 - *[Components](#markdown-header-components)*: specific device UI elements.
 - *[Capabilities](#markdown-header-capabilities)*: device API where the test will be executed.
+    - *Default Patata Capabilities*: set of default capabilities.
+    - *Custom Capabilities*: default your own personal capabilities.
+    - *Template Capabilities*: combine both default with custom capabilities.
 - *[Include](#markdown-header-include)*: set of files where the implementation of the tests are.
 - *[Config](#markdown-header-config)*: set of custom configurations which we can use on our tests or components.
 - *[Features](#markdown-header-features)*: set of behaviors to test.
@@ -130,7 +133,13 @@ You can decide how to split and organize your components files and folders.
 
 # Capabilities (```patatafile.js```)
 
-Device API version. It allows both API versions and OS versions:
+We can use capabilities in three different ways:
+
+- Capabilily default template from Patata
+- Create your custom capability using the [Capabilities Appium documentation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps.md)
+- Combine both approaches using a template.
+
+## Default Patata Capabilities
 
 | API version | OS Version |
 |:- |:-|
@@ -143,9 +152,7 @@ Device API version. It allows both API versions and OS versions:
 | ```android22``` | ```android-5.1.1``` |
 | ```android23``` | ```android-6.0``` |
 
-We can use the string value from this list or customize our own capabilities based on the [Capabilities Appium documentation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps.md).
-
-E.g.:
+E.g.: 
 
 ```
 patata.suite('suite01', {
@@ -163,6 +170,11 @@ patata.suite('suite01', {
 });
 ```
 
+## Custom Capabilities
+
+Based on the [Capabilities Appium documentation](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps.md)
+
+
 ```
 patata.suite('suite01', {
     
@@ -170,7 +182,26 @@ patata.suite('suite01', {
         browserName: 'Safari',
         platformName: 'iOS',
         platformVersion: '9.2',
-        deviceName: 'iPhone 5s'
+        deviceName: 'iPhone 5s',
+        udid: 'XXXXXX'
+    },
+    
+});
+```
+
+## Template Capabilities
+
+Use ```template``` attribute to set one of the *Default Patata Capabilities*. Then, use ```append``` to override or append the new values.
+
+```
+patata.suite('suite01', {
+    
+    capabilities:  {
+        template: 'ios-9.2',
+        append: {
+            browserName: 'Safari',
+            udid: 'XXXXXX'
+        }
     },
     
 });
