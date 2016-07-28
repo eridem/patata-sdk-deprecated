@@ -97,8 +97,9 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
     private setCapabilitiesFriendlyNames(): void {
         var capabilitiesWithFriendlyNames = {};
         for (var capName in this._capabilities) {
-            var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
             var capability = this._capabilities[capName];
+            var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
+
             capabilitiesWithFriendlyNames[capName] = capability;
             capabilitiesWithFriendlyNames[friendlyName] = capability;
         }
