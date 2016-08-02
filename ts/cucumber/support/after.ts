@@ -4,7 +4,7 @@ var patata = require('../../index');
 
 var hooks = function () {
     this.After(function () {
-        return patata.quit();
+        return this.emu.resetApp();
     });
 };
 

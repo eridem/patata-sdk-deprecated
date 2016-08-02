@@ -33,6 +33,8 @@ export class Patata implements Models.IPatata {
     _fileUtils: Models.IFileUtils;
     _log: Models.ILog;
 
+    _hasStarted: boolean = false;
+
     public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
 
     private get loaderHelper(): Models.ILoaderHelper {
@@ -122,8 +124,12 @@ export class Patata implements Models.IPatata {
 
     public start(hook, scenario, implicitWait): Q.IPromise<Models.IPatata> {
         var deferred = Q.defer();
-
         this.attachPatataIntoCucumber(hook);
+
+        if (this._hasStarted) {
+            deferred.resolve(this);
+            return deferred.promise;
+        }
 
         if (this._provider === null) {
             throw "You need to attach a provider in order to obtain the file to test.";
@@ -139,6 +145,7 @@ export class Patata implements Models.IPatata {
             deferred.reject(error);
         });
 
+        this._hasStarted = true;
         return deferred.promise;
     }
 
@@ -210,7 +217,7 @@ export class Patata implements Models.IPatata {
         var result = new Array<Models.IReport>();
         suiteConfiguration.reports = suiteConfiguration.reports || [];
 
-        suiteConfiguration.reports.forEach((report:any) => {
+        suiteConfiguration.reports.forEach((report: any) => {
             let defaultReporter = this.reportFactory.get(report);
             if (defaultReporter) {
                 report = defaultReporter;
@@ -233,8 +240,16 @@ export class Patata implements Models.IPatata {
 
     private attachPatataIntoCucumber(hook: any) {
         if (hook) {
-            hook.emu = this.emulator.driver;
-            hook.config = this.config;
+            Object.defineProperty(hook, 'emu', {
+                enumerable: true,
+                writable: true,
+                value: this.emulator.driver
+            });
+            Object.defineProperty(hook, 'config', {
+                enumerable: true,
+                writable: true,
+                value: this.config
+            });
         }
 
         Object.defineProperty(Object.prototype, 'config', this.config);

@@ -11,6 +11,7 @@ var Cli = require('./cli');
 require('./dependencies');
 var Patata = (function () {
     function Patata() {
+        this._hasStarted = false;
         this._suites = new Array();
         this._servers = new Array();
         this._reports = new Array();
@@ -147,6 +148,10 @@ var Patata = (function () {
         var _this = this;
         var deferred = Q.defer();
         this.attachPatataIntoCucumber(hook);
+        if (this._hasStarted) {
+            deferred.resolve(this);
+            return deferred.promise;
+        }
         if (this._provider === null) {
             throw "You need to attach a provider in order to obtain the file to test.";
         }
@@ -159,6 +164,7 @@ var Patata = (function () {
         }).catch(function (error) {
             deferred.reject(error);
         });
+        this._hasStarted = true;
         return deferred.promise;
     };
     Patata.prototype.quit = function () {
@@ -239,8 +245,16 @@ var Patata = (function () {
     };
     Patata.prototype.attachPatataIntoCucumber = function (hook) {
         if (hook) {
-            hook.emu = this.emulator.driver;
-            hook.config = this.config;
+            Object.defineProperty(hook, 'emu', {
+                enumerable: true,
+                writable: true,
+                value: this.emulator.driver
+            });
+            Object.defineProperty(hook, 'config', {
+                enumerable: true,
+                writable: true,
+                value: this.config
+            });
         }
         Object.defineProperty(Object.prototype, 'config', this.config);
         return this;
