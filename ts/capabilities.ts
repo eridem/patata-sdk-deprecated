@@ -15,6 +15,13 @@ class ios92 implements Models.ICapability {
     public app: string = "";
 }
 
+class android implements Models.ICapability {
+    public platformName: string = "Android";
+    public platformVersion: string = "";
+    public deviceName: string = "Android Emulator";
+    public app: string = "";
+}
+
 class android18 implements Models.ICapability {
     public platformName: string = "Android";
     public platformVersion: string = "4.3";
@@ -61,6 +68,7 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
     _capabilities = <any>{
         ios81: new ios81(),
         ios92: new ios92(),
+        android: new android(),
         android18: new android18(),
         android19: new android19(),
         android20: new android20(),
@@ -95,10 +103,13 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
         var capabilitiesWithFriendlyNames = {};
         for (var capName in this._capabilities) {
             var capability = this._capabilities[capName];
-            var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
+
+            if (capability.platformVersion) {
+                var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
+                capabilitiesWithFriendlyNames[friendlyName] = capability;
+            }
 
             capabilitiesWithFriendlyNames[capName] = capability;
-            capabilitiesWithFriendlyNames[friendlyName] = capability;
         }
         this._capabilities = capabilitiesWithFriendlyNames;
     }

@@ -145,6 +145,7 @@ We can use capabilities in three different ways:
 |:- |:-|
 | ```ios81``` | ```ios-8.1``` |
 | ```ios92``` | ```ios-9.2``` |
+| ```android``` | ```any``` |
 | ```android18``` | ```android-4.3``` |
 | ```android19``` | ```android-4.4.2``` |
 | ```android20xx``` | ```android-4.4W.2``` |
@@ -153,6 +154,14 @@ We can use capabilities in three different ways:
 | ```android23``` | ```android-6.0``` |
 
 E.g.: 
+
+```
+patata.suite('suite01', {
+    
+    capabilities: 'android',
+    
+});
+```
 
 ```
 patata.suite('suite01', {

@@ -18,6 +18,15 @@ var ios92 = (function () {
     }
     return ios92;
 }());
+var android = (function () {
+    function android() {
+        this.platformName = "Android";
+        this.platformVersion = "";
+        this.deviceName = "Android Emulator";
+        this.app = "";
+    }
+    return android;
+}());
 var android18 = (function () {
     function android18() {
         this.platformName = "Android";
@@ -77,6 +86,7 @@ var CapabilityFactory = (function () {
         this._capabilities = {
             ios81: new ios81(),
             ios92: new ios92(),
+            android: new android(),
             android18: new android18(),
             android19: new android19(),
             android20: new android20(),
@@ -109,9 +119,11 @@ var CapabilityFactory = (function () {
         var capabilitiesWithFriendlyNames = {};
         for (var capName in this._capabilities) {
             var capability = this._capabilities[capName];
-            var friendlyName = (capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase();
+            if (capability.platformVersion) {
+                var friendlyName = (capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase();
+                capabilitiesWithFriendlyNames[friendlyName] = capability;
+            }
             capabilitiesWithFriendlyNames[capName] = capability;
-            capabilitiesWithFriendlyNames[friendlyName] = capability;
         }
         this._capabilities = capabilitiesWithFriendlyNames;
     };
