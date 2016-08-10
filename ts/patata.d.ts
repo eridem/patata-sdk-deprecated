@@ -65,13 +65,14 @@ export interface IReport {
     
     beforeFeature(feature: IFeature, callback: any): void;
     afterFeature(feature: IFeature, callback: any): void;
+    featuresResult(feature: IFeaturesResult, callback: any): void;
     
     beforeScenario(scenario: IScenario, callback: any): void;
     afterScenario(scenario: IScenario, callback: any): void;
+    scenarioResult(scenario: IScenarioResult, callback: any): void;
     
     beforeStep(step: IStep, callback: any): void;
-    afterStep(step: IStep, callback: any): void;
-    
+    afterStep(step: IStep, callback: any): void;    
     stepResult(event: any, callback: any): void;
 }
 
@@ -157,4 +158,34 @@ export interface IStep {
     isPrecededByOutcomeStep: boolean;
     isRepeatingEventStep: boolean;
     isRepeatingOutcomeStep: boolean;    
+}
+
+export interface IStepResult {
+    duration: number;
+    failureException: string;
+    pendingReason: string;
+    status: string;
+}
+
+export interface IStepCount {
+    ambiguous: number;
+    failed: number;
+    passed: number;
+    pending: number;
+    skipped: number;
+    undefined: number;
+}
+
+export interface IScenarioResult {
+    duration: number;
+    failureException: string;
+    status: string;
+    stepCounts: IStepCount;
+}
+
+export interface IFeaturesResult {
+    duration: number;
+    isSuccessful: boolean;
+    scenarioCounts: number;
+    stepCounts: IStepCount;
 }

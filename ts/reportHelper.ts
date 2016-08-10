@@ -47,5 +47,35 @@ export class ReportHelper implements Models.IReportHelper {
             isRepeatingOutcomeStep: event.isRepeatingOutcomeStep(),
         }
         return result;
-    }        
+    }
+
+    public toStepResult(event:any): Models.IStepResult {
+        var result = {
+            duration: event.getDuration(),
+            failureException: event.getFailureException(),
+            pendingReason: event.getPendingReason(),
+            status: event.status
+        };
+        return result;
+    }
+
+    public toScenarioResult(event:any): Models.IScenarioResult {
+        var result = {
+            duration: event.getDuration(),
+            failureException: event.getFailureException(),
+            stepCounts: event.getStepCounts(),
+            status: event.status
+        };
+        return result;
+    }
+
+    public toFeaturesResult(event:any): Models.IFeaturesResult {
+        var result = {
+            duration: event.getDuration(),
+            isSuccessful: event.isSuccessful(),
+            stepCounts: event.getStepCounts(),
+            scenarioCounts: event.getScenarioCounts()
+        };
+        return result;
+    }
 }

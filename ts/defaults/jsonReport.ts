@@ -24,15 +24,7 @@ export class JsonReport implements Models.IReport {
         }
     }
     
-    public fromEmulator(action: any, meth: any, path: any, data: any): void {
-        /*if (action === 'http') {
-            console.log('\t> ' + meth.magenta, path, (data || '').grey);
-        } else if (action === 'command') {
-            console.log('\t> ' + meth.yellow, path.grey, data || '');
-        } else if (action === 'status') {
-            console.log('\t> ' + action.cyan, meth.grey);
-        }*/
-        
+    public fromEmulator(action: any, meth: any, path: any, data: any): void {       
         var placeToSave = this._currentStep || this._currentScenario || this._currentFeature;
         placeToSave.emulatorSteps = placeToSave.emulatorSteps || [];
         placeToSave.emulatorSteps.push({ action: action, meth: meth, path: path, data: data });
@@ -47,6 +39,10 @@ export class JsonReport implements Models.IReport {
         this._currentFeature = null;
         callback();
     }
+    public featuresResult(event: Models.IFeaturesResult, callback: any): void {
+        this._currentFeature.result = event;
+        callback();
+    }
     
     public beforeScenario(event: Models.IScenario, callback: any): void {
         this._currentFeature.scenarios = this._currentFeature.scenarios || [];
@@ -58,7 +54,11 @@ export class JsonReport implements Models.IReport {
         this._currentScenario = null;
         callback();
     }
-    
+    public scenarioResult(event: Models.IScenarioResult, callback: any): void {
+        this._currentScenario.result = event;
+        callback();
+    }
+
     public beforeStep(event: Models.IStep, callback: any): void {
         this._currentScenario.steps = this._currentScenario.steps || [];
         this._currentScenario.steps.push(event);
@@ -71,6 +71,7 @@ export class JsonReport implements Models.IReport {
     }
     
     public stepResult(event: any, callback: any): void {
+        this._currentStep.result = event;
         let resultAsString = JSON.stringify(this._result);
         fs.writeFile(this.path, resultAsString, callback);
     }

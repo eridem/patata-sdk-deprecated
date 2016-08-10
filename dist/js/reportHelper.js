@@ -46,6 +46,33 @@ var ReportHelper = (function () {
         };
         return result;
     };
+    ReportHelper.prototype.toStepResult = function (event) {
+        var result = {
+            duration: event.getDuration(),
+            failureException: event.getFailureException(),
+            pendingReason: event.getPendingReason(),
+            status: event.status
+        };
+        return result;
+    };
+    ReportHelper.prototype.toScenarioResult = function (event) {
+        var result = {
+            duration: event.getDuration(),
+            failureException: event.getFailureException(),
+            stepCounts: event.getStepCounts(),
+            status: event.status
+        };
+        return result;
+    };
+    ReportHelper.prototype.toFeaturesResult = function (event) {
+        var result = {
+            duration: event.getDuration(),
+            isSuccessful: event.isSuccessful(),
+            stepCounts: event.getStepCounts(),
+            scenarioCounts: event.getScenarioCounts()
+        };
+        return result;
+    };
     return ReportHelper;
 }());
 exports.ReportHelper = ReportHelper;

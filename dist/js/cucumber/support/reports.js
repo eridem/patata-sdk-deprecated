@@ -39,6 +39,16 @@ var reporter = function () {
             report.afterFeature(reportHelper.toFeature(event), function () { callbackCounter.addCallback(); });
         });
     });
+    this.registerHandler('FeaturesResult', function (event, callback) {
+        if (!reports) {
+            callback();
+            return;
+        }
+        var callbackCounter = getCallBackCounter(callback);
+        reports.forEach(function (report) {
+            report.featuresResult(reportHelper.toFeaturesResult(event), function () { callbackCounter.addCallback(); });
+        });
+    });
     this.registerHandler('BeforeScenario', function (event, callback) {
         if (!reports) {
             callback();
@@ -57,6 +67,16 @@ var reporter = function () {
         var callbackCounter = getCallBackCounter(callback);
         reports.forEach(function (report) {
             report.afterScenario(reportHelper.toScenario(event), function () { callbackCounter.addCallback(); });
+        });
+    });
+    this.registerHandler('ScenarioResult', function (event, callback) {
+        if (!reports) {
+            callback();
+            return;
+        }
+        var callbackCounter = getCallBackCounter(callback);
+        reports.forEach(function (report) {
+            report.scenarioResult(reportHelper.toScenarioResult(event), function () { callbackCounter.addCallback(); });
         });
     });
     this.registerHandler('BeforeStep', function (event, callback) {
@@ -85,7 +105,7 @@ var reporter = function () {
         }
         var callbackCounter = getCallBackCounter(callback);
         reports.forEach(function (report) {
-            report.stepResult(event, function () { callbackCounter.addCallback(); });
+            report.stepResult(reportHelper.toStepResult(event), function () { callbackCounter.addCallback(); });
         });
     });
 };

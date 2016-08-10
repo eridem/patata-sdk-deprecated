@@ -51,6 +51,18 @@ let reporter = function() {
         });        
     });
 
+    this.registerHandler('FeaturesResult', function(event, callback) {
+        if (!reports) {
+            callback();
+            return;
+        }
+        
+        let callbackCounter = getCallBackCounter(callback);
+        reports.forEach((report: Models.IReport) => {
+            report.featuresResult(reportHelper.toFeaturesResult(event), () => { callbackCounter.addCallback() });
+        });        
+    });
+
     this.registerHandler('BeforeScenario', function (event, callback) {
         if (!reports) {
             callback();
@@ -73,6 +85,18 @@ let reporter = function() {
         reports.forEach((report: Models.IReport) => {
             report.afterScenario(reportHelper.toScenario(event), () => { callbackCounter.addCallback() });
         });
+    });
+
+    this.registerHandler('ScenarioResult', function(event, callback) {
+        if (!reports) {
+            callback();
+            return;
+        }
+        
+        let callbackCounter = getCallBackCounter(callback);
+        reports.forEach((report: Models.IReport) => {
+            report.scenarioResult(reportHelper.toScenarioResult(event), () => { callbackCounter.addCallback() });
+        });        
     });
 
     this.registerHandler('BeforeStep', function (event, callback) {
@@ -106,7 +130,7 @@ let reporter = function() {
         
         let callbackCounter = getCallBackCounter(callback);
         reports.forEach((report: Models.IReport) => {
-            report.stepResult(event, () => { callbackCounter.addCallback() });
+            report.stepResult(reportHelper.toStepResult(event), () => { callbackCounter.addCallback() });
         });
     });
 }

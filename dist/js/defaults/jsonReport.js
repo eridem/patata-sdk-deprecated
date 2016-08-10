@@ -17,13 +17,6 @@ var JsonReport = (function () {
         }
     };
     JsonReport.prototype.fromEmulator = function (action, meth, path, data) {
-        /*if (action === 'http') {
-            console.log('\t> ' + meth.magenta, path, (data || '').grey);
-        } else if (action === 'command') {
-            console.log('\t> ' + meth.yellow, path.grey, data || '');
-        } else if (action === 'status') {
-            console.log('\t> ' + action.cyan, meth.grey);
-        }*/
         var placeToSave = this._currentStep || this._currentScenario || this._currentFeature;
         placeToSave.emulatorSteps = placeToSave.emulatorSteps || [];
         placeToSave.emulatorSteps.push({ action: action, meth: meth, path: path, data: data });
@@ -37,6 +30,10 @@ var JsonReport = (function () {
         this._currentFeature = null;
         callback();
     };
+    JsonReport.prototype.featuresResult = function (event, callback) {
+        this._currentFeature.result = event;
+        callback();
+    };
     JsonReport.prototype.beforeScenario = function (event, callback) {
         this._currentFeature.scenarios = this._currentFeature.scenarios || [];
         this._currentFeature.scenarios.push(event);
@@ -45,6 +42,10 @@ var JsonReport = (function () {
     };
     JsonReport.prototype.afterScenario = function (event, callback) {
         this._currentScenario = null;
+        callback();
+    };
+    JsonReport.prototype.scenarioResult = function (event, callback) {
+        this._currentScenario.result = event;
         callback();
     };
     JsonReport.prototype.beforeStep = function (event, callback) {
@@ -58,6 +59,7 @@ var JsonReport = (function () {
         callback();
     };
     JsonReport.prototype.stepResult = function (event, callback) {
+        this._currentStep.result = event;
         var resultAsString = JSON.stringify(this._result);
         fs.writeFile(this.path, resultAsString, callback);
     };
