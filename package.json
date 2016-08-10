@@ -1,6 +1,6 @@
 {
   "name": "patata",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Native testing made easy",
   "main": "dist/js/index.js",
   "author": "Miguel Ángel Domínguez Coloma <m@eridem.net> (http://eridem.net)",
@@ -31,8 +31,7 @@
     "cucumber": "^1.2.1",
     "require-dir": "^0.3.0",
     "appium": "^1.5.3",
-    "get-port": "^2.1.0",
-    "yargs": "^4.8.1"
+    "get-port": "^2.1.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

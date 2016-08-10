@@ -25,13 +25,13 @@ exports.cli = function (result, patata) {
 
     printLogo();
 
-    var argv = require('yargs').argv;
-    if (argv._.length === 0) {
+    var argv = process.argv;
+    if (argv.length < 3) {
         throw "No suites launched. Please use: patata [suite]";
     }
 
     // Get suite name
-    var suiteCli = argv._[0];
+    var suiteCli = argv[2];
 
     // Fix default values
     fixDefaultValues(patata, suiteCli).then(function (patata: Models.IPatata) {
