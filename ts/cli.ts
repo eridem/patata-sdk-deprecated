@@ -5,10 +5,11 @@ import * as Q from 'q';
 const getPort = require('get-port');
 const colors = require('colors');
 const extend = require('util')._extend;
+const asciify = require('asciify')
 
 var appiumApp;
 
-exports.cli = function (result, patata) {
+exports.cli = function (suiteName, patata) {
     function exitHandler(options, err) {
         stopAppium();
         if (options.exit) process.exit();
@@ -23,50 +24,49 @@ exports.cli = function (result, patata) {
     //catches uncaught exceptions
     process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
-    printLogo();
+    printLogo().then(function() {
+        if (!suiteName) {
+            throw "No suites launched. Please use: patata [suite]";
+        }
 
-    var argv = process.argv;
-    if (argv.length < 3) {
-        throw "No suites launched. Please use: patata [suite]";
-    }
+        console.log(patata.log.getMessage('Fixing default values...'))
 
-    // Get suite name
-    var suiteCli = argv[2];
+        // Fix default values
+        fixDefaultValues(patata, suiteName).then(function (patata: Models.IPatata) {
+            console.log(patata.log.getMessage('Loading suite...'))
 
-    // Fix default values
-    fixDefaultValues(patata, suiteCli).then(function (patata: Models.IPatata) {
-        // Current suite
-        var currentSuite = patata.getSuite(suiteCli);
+            // Current suite
+            var currentSuite = patata.getSuite(suiteName);
 
-        // Init suite
-        patata.init(suiteCli);
+            // Init suite
+            patata.init(suiteName);
 
-        // Create cucumber args
-        var cucumberArgs = createCucumberArgs(patata);
+            // Create cucumber args
+            var cucumberArgs = createCucumberArgs(patata);
 
-        // Start appium
-        startAppium(currentSuite).then(function () {
+            // Start appium
+            startAppium(currentSuite).then(function () {
 
 
-            // Init cucumber with args
-            startCucumber(cucumberArgs);
+                // Init cucumber with args
+                startCucumber(cucumberArgs);
+            }).catch(function (error) {
+                exitWithError(error);
+            });
         }).catch(function (error) {
             exitWithError(error);
         });
-    }).catch(function (error) {
-        exitWithError(error);
     });
-
 
     //
     // Fix default suite values that were optional
     // on the patata configuration suite from patatafile.js
     //
-    function fixDefaultValues(patata, suiteCli) {
+    function fixDefaultValues(patata, suiteName) {
         var deferred = Q.defer();
 
         // Current suite
-        var currentSuite = patata.getSuite(suiteCli);
+        var currentSuite = patata.getSuite(suiteName);
 
         // Fix features default values
         currentSuite.features = currentSuite.features || {};
@@ -83,7 +83,7 @@ exports.cli = function (result, patata) {
                 server.host = server.host || server.address;
             });
             // Replace previous suite with complete values
-            patata.suite(suiteCli, currentSuite);
+            patata.suite(suiteName, currentSuite);
             // Return
             deferred.resolve(patata);
         };
@@ -255,7 +255,7 @@ exports.cli = function (result, patata) {
             console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
             console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
             console.log("\n");
-            console.log('Appium: ', "\t" + JSON.stringify(patata.currentSuite.servers));            
+            console.log('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers));            
             console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
             console.log("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability));
             console.log("\n");
@@ -265,13 +265,13 @@ exports.cli = function (result, patata) {
     }
 
     function printLogo() {
-        console.log("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0__\n".yellow +
-            "______\u00A0\u00A0_____\u00A0\u00A0\u00A0_/\u00A0\u00A0|_\u00A0_____\u00A0\u00A0\u00A0_/\u00A0\u00A0|_\u00A0_____\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0|__|\u00A0\u00A0____\n".yellow +
-            "\\____\u00A0\\\u00A0\\__\u00A0\u00A0\\\u00A0\u00A0\\\u00A0\u00A0\u00A0__\\\\__\u00A0\u00A0\\\u00A0\u00A0\\\u00A0\u00A0\u00A0__\\\\__\u00A0\u00A0\\\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0|\u00A0\u00A0|\u00A0/\u00A0\u00A0_\u00A0\\\n".yellow +
-            "|\u00A0\u00A0|_>\u00A0>\u00A0/\u00A0__\u00A0\\_\u00A0|\u00A0\u00A0|\u00A0\u00A0\u00A0/\u00A0__\u00A0\\_\u00A0|\u00A0\u00A0|\u00A0\u00A0\u00A0/\u00A0__\u00A0\\_\u00A0\u00A0\u00A0\u00A0|\u00A0\u00A0|(\u00A0\u00A0<_>\u00A0)\n".yellow +
-            "|\u00A0\u00A0\u00A0__/\u00A0(____\u00A0\u00A0/\u00A0|__|\u00A0\u00A0(____\u00A0\u00A0/\u00A0|__|\u00A0\u00A0(____\u00A0\u00A0/\u00A0/\\\u00A0|__|\u00A0\\____/\n".yellow +
-            "|__|\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\\/\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\\/\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\\/\u00A0\u00A0\\/\n".yellow
-        );
+        var logoPromise = Q.defer();
+        asciify('patata.io', {color:'yellow'}, function (err, res) { 
+            console.log(res);
+            logoPromise.resolve();
+        })
+        return logoPromise.promise;
     }
+
 };
 

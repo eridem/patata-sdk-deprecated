@@ -25,6 +25,7 @@ export interface IFileUtils {
 }
 
 export interface ILog {
+    getMessage(message:string):string;
     getErrorMessage(message:string):string;
     getError(message:string):Error;
 }

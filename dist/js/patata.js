@@ -19,6 +19,11 @@ var Patata = (function () {
         this._loggers = new Array();
         this._emulator = null;
     }
+    Object.defineProperty(Patata.prototype, "suites", {
+        get: function () { return this._suites; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Patata.prototype, "currentSuite", {
         get: function () { return this._currentSuite; },
         enumerable: true,
@@ -153,10 +158,11 @@ var Patata = (function () {
             return deferred.promise;
         }
         if (this._provider === null) {
-            throw "You need to attach a provider in order to obtain the file to test.";
+            throw this._log.getError("You need to attach a provider in order to obtain the file to test.");
         }
         this._provider.getBin().then(function (uri) {
             _this.emulator.start(uri).then(function () {
+                _this._log.getMessage('Using binary: ' + uri);
                 deferred.resolve(_this);
             }).catch(function (error) {
                 deferred.reject(error);

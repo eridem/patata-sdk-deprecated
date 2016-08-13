@@ -35,6 +35,7 @@ export class Patata implements Models.IPatata {
 
     _hasStarted: boolean = false;
 
+    public get suites(): Array<Models.ISuiteConfiguration> { return this._suites; }
     public get currentSuite(): Models.ISuiteConfiguration { return this._currentSuite; }
 
     private get loaderHelper(): Models.ILoaderHelper {
@@ -99,7 +100,6 @@ export class Patata implements Models.IPatata {
 
     public init(suiteConfigurationArg: Models.ISuiteConfiguration | string): Models.IPatata {
         this._currentSuite = this.getSuite(suiteConfigurationArg);
-
         this._capability = this.obtainCapability(this.currentSuite);
         this._provider = this.obtainProvider(this.currentSuite);
         this._servers = this.obtainServers(this.currentSuite);
@@ -132,11 +132,12 @@ export class Patata implements Models.IPatata {
         }
 
         if (this._provider === null) {
-            throw "You need to attach a provider in order to obtain the file to test.";
+            throw this._log.getError("You need to attach a provider in order to obtain the file to test.");
         }
 
         this._provider.getBin().then((uri) => {
             this.emulator.start(uri).then(() => {
+                this._log.getMessage('Using binary: ' + uri)
                 deferred.resolve(this);
             }).catch((error) => {
                 deferred.reject(error);
@@ -203,7 +204,7 @@ export class Patata implements Models.IPatata {
         return <Models.IProvider>new Plugin(this, options);
     }
 
-    private obtainCapability(suiteConfiguration: Models.ISuiteConfiguration): Models.ICapability {
+    public obtainCapability(suiteConfiguration: Models.ISuiteConfiguration): Models.ICapability {
         var result = this.capabilityFactory.getByName(suiteConfiguration.capability);
         return result;
     }

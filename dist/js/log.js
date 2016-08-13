@@ -2,6 +2,9 @@
 var Log = (function () {
     function Log() {
     }
+    Log.prototype.getMessage = function (message) {
+        return "[Patata] " + message;
+    };
     Log.prototype.getErrorMessage = function (message) {
         return "[Patata] " + message;
     };
