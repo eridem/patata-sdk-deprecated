@@ -6,6 +6,14 @@ var extend = require('util')._extend;
 var asciify = require('asciify');
 var appiumApp;
 exports.cli = function (suiteName, patata) {
+    if (typeof suiteName !== 'string') {
+        var argv = process.argv;
+        if (argv.length < 3) {
+            throw "No suites launched. Please use: patata [suite]";
+        }
+        // Get suite name
+        suiteName = argv[2];
+    }
     function exitHandler(options, err) {
         stopAppium();
         if (options.exit)

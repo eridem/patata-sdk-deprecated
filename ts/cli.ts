@@ -10,6 +10,16 @@ const asciify = require('asciify')
 var appiumApp;
 
 exports.cli = function (suiteName, patata) {
+    if (typeof suiteName !== 'string') {
+        var argv = process.argv;
+        if (argv.length < 3) {
+            throw "No suites launched. Please use: patata [suite]";
+        }
+
+        // Get suite name
+        suiteName = argv[2];
+    }
+
     function exitHandler(options, err) {
         stopAppium();
         if (options.exit) process.exit();
@@ -24,7 +34,7 @@ exports.cli = function (suiteName, patata) {
     //catches uncaught exceptions
     process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
 
-    printLogo().then(function() {
+    printLogo().then(function () {
         if (!suiteName) {
             throw "No suites launched. Please use: patata [suite]";
         }
@@ -255,7 +265,7 @@ exports.cli = function (suiteName, patata) {
             console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
             console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
             console.log("\n");
-            console.log('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers));            
+            console.log('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers));
             console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
             console.log("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability));
             console.log("\n");
@@ -266,7 +276,7 @@ exports.cli = function (suiteName, patata) {
 
     function printLogo() {
         var logoPromise = Q.defer();
-        asciify('patata.io', {color:'yellow'}, function (err, res) { 
+        asciify('patata.io', { color: 'yellow' }, function (err, res) {
             console.log(res);
             logoPromise.resolve();
         })
