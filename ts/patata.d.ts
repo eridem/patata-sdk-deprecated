@@ -12,7 +12,8 @@ export interface IPatata {
     config: any;
     fileUtils: IFileUtils;
     log: ILog;
-
+    capabilityFactory: ICapabilityFactory;
+    
     init(configuration: ISuiteConfiguration|string): IPatata;
     suite(name: string, suite: ISuiteConfiguration): IPatata;
     getSuite(suiteConfigurationArg: ISuiteConfiguration|string): ISuiteConfiguration;
@@ -93,6 +94,7 @@ export interface ICapability {
 }
 
 export interface ICapabilityFactory {
+    capabilities: any;
     getByName(name: string | any): ICapability;
 }
 

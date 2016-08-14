@@ -96,13 +96,20 @@ var CapabilityFactory = (function () {
         };
         this.setCapabilitiesFriendlyNames();
     }
+    Object.defineProperty(CapabilityFactory.prototype, "capabilities", {
+        get: function () {
+            return this._capabilities;
+        },
+        enumerable: true,
+        configurable: true
+    });
     CapabilityFactory.prototype.getByName = function (name) {
         if (typeof name === 'string') {
-            return this._capabilities[name];
+            return this.capabilities[name];
         }
         else if (name) {
             if (name.template && name.append) {
-                var template = this._capabilities[name.template];
+                var template = this.capabilities[name.template];
                 var append = name.append;
                 return extend(template, append);
             }
@@ -117,8 +124,8 @@ var CapabilityFactory = (function () {
      */
     CapabilityFactory.prototype.setCapabilitiesFriendlyNames = function () {
         var capabilitiesWithFriendlyNames = {};
-        for (var capName in this._capabilities) {
-            var capability = this._capabilities[capName];
+        for (var capName in this.capabilities) {
+            var capability = this.capabilities[capName];
             if (capability.platformVersion) {
                 var friendlyName = (capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase();
                 capabilitiesWithFriendlyNames[friendlyName] = capability;

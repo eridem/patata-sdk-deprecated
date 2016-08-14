@@ -45,7 +45,7 @@ export class Patata implements Models.IPatata {
         return this._loaderHelper;
     }
 
-    private get capabilityFactory(): Models.ICapabilityFactory {
+    public get capabilityFactory(): Models.ICapabilityFactory {
         if (!this._capabilityFactory) {
             this._capabilityFactory = new Capabilities.CapabilityFactory();
         }

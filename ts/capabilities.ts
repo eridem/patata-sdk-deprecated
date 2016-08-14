@@ -65,7 +65,7 @@ class android23 implements Models.ICapability {
 }
 
 export class CapabilityFactory implements Models.ICapabilityFactory {
-    _capabilities = <any>{
+    private _capabilities = <any>{
         ios81: new ios81(),
         ios92: new ios92(),
         android: new android(),
@@ -77,16 +77,20 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
         android23: new android23()
     };
 
+    public get capabilities(): any {
+        return this._capabilities;
+    }
+
     public constructor() {
         this.setCapabilitiesFriendlyNames();
     }
 
     public getByName(name: string | any): Models.ICapability {
         if (typeof name === 'string') {
-            return this._capabilities[name];
+            return this.capabilities[name];
         } else if (name) {
             if (name.template && name.append) {
-                var template = this._capabilities[name.template];
+                var template = this.capabilities[name.template];
                 var append = name.append;
                 return extend(template, append);
             }
@@ -101,8 +105,8 @@ export class CapabilityFactory implements Models.ICapabilityFactory {
      */
     private setCapabilitiesFriendlyNames(): void {
         var capabilitiesWithFriendlyNames = {};
-        for (var capName in this._capabilities) {
-            var capability = this._capabilities[capName];
+        for (var capName in this.capabilities) {
+            var capability = this.capabilities[capName];
 
             if (capability.platformVersion) {
                 var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
