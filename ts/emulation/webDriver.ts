@@ -17,7 +17,7 @@ export class WebDriver implements Models.IEmulator {
         return this;
     }
     
-    public start(binary: string) : Q.IPromise<Models.IEmulator> {        
+    public start(binary: string) : Promise<Models.IEmulator> {        
         this._desired.app = binary;
         
         // Init driver

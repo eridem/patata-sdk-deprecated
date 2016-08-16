@@ -1,88 +1,79 @@
 "use strict";
-var extend = require('util')._extend;
-var ios81 = (function () {
-    function ios81() {
+const extend = require('util')._extend;
+class ios81 {
+    constructor() {
         this.platformName = "iOS";
         this.platformVersion = "8.1";
         this.deviceName = "iPhone Simulator";
         this.app = "";
     }
-    return ios81;
-}());
-var ios92 = (function () {
-    function ios92() {
+}
+class ios92 {
+    constructor() {
         this.platformName = "iOS";
         this.platformVersion = "9.2";
         this.deviceName = "iPhone Simulator";
         this.app = "";
     }
-    return ios92;
-}());
-var android = (function () {
-    function android() {
+}
+class android {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android;
-}());
-var android18 = (function () {
-    function android18() {
+}
+class android18 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "4.3";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android18;
-}());
-var android19 = (function () {
-    function android19() {
+}
+class android19 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "4.4.2";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android19;
-}());
-var android20 = (function () {
-    function android20() {
+}
+class android20 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "4.4W.2";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android20;
-}());
-var android21 = (function () {
-    function android21() {
+}
+class android21 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "5.0.1";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android21;
-}());
-var android22 = (function () {
-    function android22() {
+}
+class android22 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "5.1.1";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android22;
-}());
-var android23 = (function () {
-    function android23() {
+}
+class android23 {
+    constructor() {
         this.platformName = "Android";
         this.platformVersion = "6.0";
         this.deviceName = "Android Emulator";
         this.app = "";
     }
-    return android23;
-}());
-var CapabilityFactory = (function () {
-    function CapabilityFactory() {
+}
+class CapabilityFactory {
+    constructor() {
         this._capabilities = {
             ios81: new ios81(),
             ios92: new ios92(),
@@ -96,14 +87,10 @@ var CapabilityFactory = (function () {
         };
         this.setCapabilitiesFriendlyNames();
     }
-    Object.defineProperty(CapabilityFactory.prototype, "capabilities", {
-        get: function () {
-            return this._capabilities;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    CapabilityFactory.prototype.getByName = function (name) {
+    get capabilities() {
+        return this._capabilities;
+    }
+    getByName(name) {
         if (typeof name === 'string') {
             return this.capabilities[name];
         }
@@ -118,22 +105,21 @@ var CapabilityFactory = (function () {
         else {
             throw new Error("Capability not found.");
         }
-    };
+    }
     /**
      * This set capabilities names like: ios-8.1, android-5.1.1, ...
      */
-    CapabilityFactory.prototype.setCapabilitiesFriendlyNames = function () {
+    setCapabilitiesFriendlyNames() {
         var capabilitiesWithFriendlyNames = {};
         for (var capName in this.capabilities) {
             var capability = this.capabilities[capName];
             if (capability.platformVersion) {
-                var friendlyName = (capability.platformName + "-" + capability.platformVersion).toLocaleLowerCase();
+                var friendlyName = `${capability.platformName}-${capability.platformVersion}`.toLocaleLowerCase();
                 capabilitiesWithFriendlyNames[friendlyName] = capability;
             }
             capabilitiesWithFriendlyNames[capName] = capability;
         }
         this._capabilities = capabilitiesWithFriendlyNames;
-    };
-    return CapabilityFactory;
-}());
+    }
+}
 exports.CapabilityFactory = CapabilityFactory;

@@ -5,9 +5,6 @@
   "path": "typings",
   "bundle": "typings/tsd.d.ts",
   "installed": {
-    "q/Q.d.ts": {
-      "commit": "d95596ca622a23e258859a2d7d71c4af959da21a"
-    },
     "assertion-error/assertion-error.d.ts": {
       "commit": "299b5caa22876ef27dc8e9a5b7fd7bf93457b6f4"
     },
@@ -16,9 +13,6 @@
     },
     "node/node.d.ts": {
       "commit": "d95596ca622a23e258859a2d7d71c4af959da21a"
-    },
-    "underscore/underscore.d.ts": {
-      "commit": "dc6d1ebfaa554e85b91846574728930972ca9868"
     },
     "promises-a-plus/promises-a-plus.d.ts": {
       "commit": "299b5caa22876ef27dc8e9a5b7fd7bf93457b6f4"

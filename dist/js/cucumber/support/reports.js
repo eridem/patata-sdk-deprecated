@@ -1,49 +1,49 @@
 "use strict";
-var reporter = function () {
-    var reportHelper = require('../../index').reportHelper;
-    var reports = require('../../index').reports;
+const path = require('path');
+let reporter = function () {
+    let reportHelper = require(path.join(__dirname, '../../index')).reportHelper;
+    let reports = require(path.join(__dirname, '../../index')).reports;
     this.chainReportPromises = function (reports, event, fnString, callback) {
-        if (!reports || !reports.lengt) {
-            callback();
-            return;
-        }
-        var mainPromise = reports[0][fnString](event);
-        for (var i = 1; i < reports.length; i++) {
-            if (!reports[i][fnString]) {
-                continue;
+        reports = reports || [];
+        // First dummy chain
+        var promise = new Promise((resolve) => { resolve(); });
+        // Chain promises to execute one by one synchronously
+        reports.forEach((report) => {
+            if (typeof report[fnString] !== 'function') {
+                return;
             }
-            mainPromise = mainPromise.then(function () {
-                reports[i][fnString](event);
+            promise = promise.then(() => {
+                return report[fnString](event) || new Promise((resolve) => { resolve(); });
             });
-        }
-        mainPromise.then(callback);
+        });
+        return promise.then(callback);
     };
     this.registerHandler('BeforeFeature', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toFeature(event), 'beforeFeature', callback);
+        return this.chainReportPromises(reports, reportHelper.toFeature(event), 'beforeFeature', callback);
     });
     this.registerHandler('AfterFeature', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toFeature(event), 'afterFeature', callback);
+        return this.chainReportPromises(reports, reportHelper.toFeature(event), 'afterFeature', callback);
     });
     this.registerHandler('FeaturesResult', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toFeaturesResult(event), 'featuresResult', callback);
+        return this.chainReportPromises(reports, reportHelper.toFeaturesResult(event), 'featuresResult', callback);
     });
     this.registerHandler('BeforeScenario', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toScenario(event), 'beforeScenario', callback);
+        return this.chainReportPromises(reports, reportHelper.toScenario(event), 'beforeScenario', callback);
     });
     this.registerHandler('AfterScenario', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toScenario(event), 'afterScenario', callback);
+        return this.chainReportPromises(reports, reportHelper.toScenario(event), 'afterScenario', callback);
     });
     this.registerHandler('ScenarioResult', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toScenarioResult(event), 'scenarioResult', callback);
+        return this.chainReportPromises(reports, reportHelper.toScenarioResult(event), 'scenarioResult', callback);
     });
     this.registerHandler('BeforeStep', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toStep(event), 'beforeStep', callback);
+        return this.chainReportPromises(reports, reportHelper.toStep(event), 'beforeStep', callback);
     });
     this.registerHandler('AfterStep', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toStep(event), 'afterStep', callback);
+        return this.chainReportPromises(reports, reportHelper.toStep(event), 'afterStep', callback);
     });
     this.registerHandler('StepResult', function (event, callback) {
-        this.chainReportPromises(reports, reportHelper.toStepResult(event), 'stepResult', callback);
+        return this.chainReportPromises(reports, reportHelper.toStepResult(event), 'stepResult', callback);
     });
 };
 module.exports = reporter;

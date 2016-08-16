@@ -1,35 +1,28 @@
-/// <reference path="../../typings/q/Q.d.ts" />
 "use strict";
-var Q = require('q');
 var fs = require('fs');
-var DefaultProvider = (function () {
-    function DefaultProvider(patata, opts) {
+class DefaultProvider {
+    constructor(patata, opts) {
         this._patata = patata;
         this._opts = opts;
         if (!this._opts.path) {
-            throw this.log.getError("[Default provider] File cannot be null");
+            throw this.log.getError(`[Default provider] File cannot be null`);
         }
         return this;
     }
-    Object.defineProperty(DefaultProvider.prototype, "log", {
-        get: function () { return this._patata.log; },
-        enumerable: true,
-        configurable: true
-    });
-    DefaultProvider.prototype.getBin = function () {
-        var deferred = Q.defer();
-        var file = process.cwd() + '/' + this._opts.path;
-        try {
-            fs.statSync(file);
-        }
-        catch (err) {
-            if (err.code == 'ENOENT') {
-                throw this.log.getError("[Default provider] file not found [" + file + "]");
+    get log() { return this._patata.log; }
+    getBin() {
+        return new Promise((resolve, reject) => {
+            let file = process.cwd() + '/' + this._opts.path;
+            try {
+                fs.statSync(file);
             }
-        }
-        deferred.resolve(file);
-        return deferred.promise;
-    };
-    return DefaultProvider;
-}());
+            catch (err) {
+                if (err.code == 'ENOENT') {
+                    throw this.log.getError(`[Default provider] file not found [${file}]`);
+                }
+            }
+            resolve(file);
+        });
+    }
+}
 exports.DefaultProvider = DefaultProvider;

@@ -1,7 +1,4 @@
-/// <reference path="../../typings/q/Q.d.ts" />
-
 import * as Models from '../patata.d';
-import * as Q from 'q';
 var fs = require('fs');
 
 export class DefaultProvider implements Models.IProvider {
@@ -18,17 +15,17 @@ export class DefaultProvider implements Models.IProvider {
         return this;
     }
 
-    public getBin(): Q.IPromise<String> {
-        var deferred = Q.defer();
-        var file = process.cwd() + '/' + this._opts.path;
-        try {
-            fs.statSync(file);
-        } catch (err) {
-            if (err.code == 'ENOENT') {
-                throw this.log.getError(`[Default provider] file not found [${file}]`);
+    public getBin(): Promise<String> {
+        return new Promise<String>((resolve, reject) => {
+            let file = process.cwd() + '/' + this._opts.path;
+            try {
+                fs.statSync(file);
+            } catch (err) {
+                if (err.code == 'ENOENT') {
+                    throw this.log.getError(`[Default provider] file not found [${file}]`);
+                }
             }
-        }
-        deferred.resolve(file);
-        return deferred.promise;
+            resolve(file);
+        })
     }
 }

@@ -1,5 +1,4 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/q/Q.d.ts" />
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 
 export interface IPatata {
@@ -28,6 +27,7 @@ export interface IFileUtils {
 
 export interface ILog {
     getMessage(message:string):string;
+    getMessageWithCustomColors(message: string):string;
     getErrorMessage(message:string):string;
     getError(message:string):Error;
 }
@@ -60,7 +60,7 @@ export interface ISuiteConfiguration {
 }
 
 export interface IProvider {
-    getBin():Q.IPromise<string>;
+    getBin(): Promise<string>;
 }
 
 export interface IReport {
@@ -106,7 +106,7 @@ export interface IServer {
 
 export interface IEmulator {
     registerReports(report: Array<IReport>): IEmulator;
-    start(uri: string):Q.IPromise<IEmulator>;
+    start(uri: string): Promise<IEmulator>;
     quit():IEmulator;
     driver:any;
 }

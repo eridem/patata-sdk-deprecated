@@ -3,7 +3,6 @@ declare var require: any;
 
 import * as Models from './patata.d';
 import * as Emulation from './emulation/webDriver';
-import * as Q from 'q';
 import * as Capabilities from './capabilities';
 import * as LoaderHelpers from './loaderHelper';
 import * as ReportHelper from './reportHelper';
@@ -122,32 +121,32 @@ export class Patata implements Models.IPatata {
         return suiteConfiguration;
     }
 
-    public start(hook, scenario, implicitWait): Q.IPromise<Models.IPatata> {
-        var deferred = Q.defer();
-        this.attachPatataIntoCucumber(hook);
+    public start(hook, scenario, implicitWait): Promise<Models.IPatata> {
+        return new Promise<Models.IPatata>((resolve, reject) => {
+            this.attachPatataIntoCucumber(hook);
 
-        if (this._hasStarted) {
-            deferred.resolve(this);
-            return deferred.promise;
-        }
+            if (this._hasStarted) {
+                resolve(this);
+                return;
+            }
 
-        if (this._provider === null) {
-            throw this._log.getError("You need to attach a provider in order to obtain the file to test.");
-        }
+            if (this._provider === null) {
+                throw this._log.getError("You need to attach a provider in order to obtain the file to test.");
+            }
 
-        this._provider.getBin().then((uri) => {
-            this.emulator.start(uri).then(() => {
-                this._log.getMessage('Using binary: ' + uri)
-                deferred.resolve(this);
+            this._provider.getBin().then((uri) => {
+                this.emulator.start(uri).then(() => {
+                    this._log.getMessage('Using binary: ' + uri)
+                    resolve(this);
+                }).catch((error) => {
+                    reject(error);
+                });
             }).catch((error) => {
-                deferred.reject(error);
+                reject(error);
             });
-        }).catch((error) => {
-            deferred.reject(error);
-        });
 
-        this._hasStarted = true;
-        return deferred.promise;
+            this._hasStarted = true;
+        })
     }
 
     public quit() {

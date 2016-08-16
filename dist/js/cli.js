@@ -1,9 +1,9 @@
 "use strict";
-var Q = require('q');
-var getPort = require('get-port');
-var colors = require('colors');
-var extend = require('util')._extend;
-var asciify = require('asciify');
+const getPort = require('get-port');
+const colors = require('colors');
+const extend = require('util')._extend;
+const asciify = require('asciify');
+const path = require('path');
 var appiumApp;
 exports.cli = function (suiteName, patata) {
     if (typeof suiteName !== 'string') {
@@ -27,7 +27,7 @@ exports.cli = function (suiteName, patata) {
     process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
     printLogo().then(function () {
         if (!suiteName) {
-            throw "No suites launched. Please use: patata [suite]";
+            throw patata.log.getError("No suites launched. Please use: patata -s [suite]");
         }
         console.log(patata.log.getMessage('Fixing default values...'));
         // Fix default values
@@ -55,66 +55,57 @@ exports.cli = function (suiteName, patata) {
     // on the patata configuration suite from patatafile.js
     //
     function fixDefaultValues(patata, suiteName) {
-        var deferred = Q.defer();
-        // Current suite
-        var currentSuite = patata.getSuite(suiteName);
-        // Fix features default values
-        currentSuite.features = currentSuite.features || {};
-        currentSuite.features.files = currentSuite.features.files || [];
-        currentSuite.features.tags = currentSuite.features.tags || [];
-        currentSuite.features.scenarios = currentSuite.features.scenarios || [];
-        // Reports
-        currentSuite.reports = currentSuite.reports || [];
-        var afterAssignPort = function (currentSuite) {
-            // Fix port=address
-            currentSuite.servers.forEach(function (server) {
-                server.host = server.host || server.address;
-            });
-            // Replace previous suite with complete values
-            patata.suite(suiteName, currentSuite);
-            // Return
-            deferred.resolve(patata);
-        };
-        var fixPort = function (server) {
-            var fixPortDeferred = Q.defer();
-            if (!server.port) {
-                getPort().then(function (port) {
-                    server.port = port;
-                    fixPortDeferred.resolve(server);
+        return new Promise((resolve, reject) => {
+            // Current suite
+            var currentSuite = patata.getSuite(suiteName);
+            // Fix features default values
+            currentSuite.features = currentSuite.features || {};
+            currentSuite.features.files = currentSuite.features.files || [];
+            currentSuite.features.tags = currentSuite.features.tags || [];
+            currentSuite.features.scenarios = currentSuite.features.scenarios || [];
+            // Reports
+            currentSuite.reports = currentSuite.reports || [];
+            var afterAssignPort = (currentSuite) => {
+                // Fix port=address
+                currentSuite.servers.forEach(function (server) {
+                    server.host = server.host || server.address;
+                });
+                // Replace previous suite with complete values
+                patata.suite(suiteName, currentSuite);
+                // Return
+                resolve(patata);
+            };
+            var fixPort = function (server) {
+                return new Promise((resolve, reject) => {
+                    if (!server.port) {
+                        getPort().then(function (port) {
+                            server.port = port;
+                            resolve(server);
+                        });
+                    }
+                    else {
+                        resolve(server);
+                    }
+                });
+            };
+            // Fix server default values        
+            if (currentSuite.servers && currentSuite.servers.length) {
+                var portPromises = [];
+                currentSuite.servers.forEach(function (server) {
+                    portPromises.push(fixPort(server));
+                });
+                Promise.all(portPromises).then(values => {
+                    currentSuite.servers = values;
+                    afterAssignPort(currentSuite);
                 });
             }
             else {
-                fixPortDeferred.resolve(server);
-            }
-            return fixPortDeferred.promise;
-        };
-        // Fix server default values        
-        if (currentSuite.servers && currentSuite.servers.length) {
-            var portPromises = [];
-            currentSuite.servers.forEach(function (server) {
-                portPromises.push(fixPort(server));
-            });
-            Q.allSettled(portPromises).then(function (results) {
-                var newServers = [];
-                results.forEach(function (result) {
-                    if (result.state === "fulfilled") {
-                        newServers.push(result.value);
-                    }
-                    else {
-                        throw new Error('[Patata] Could not resolve one of the Appium servers. Please try again or verify your settings.');
-                    }
+                fixPort({ host: 'localhost', port: null }).then(function (server) {
+                    currentSuite.servers = [server];
+                    afterAssignPort(currentSuite);
                 });
-                currentSuite.servers = newServers;
-                afterAssignPort(currentSuite);
-            });
-        }
-        else {
-            fixPort({ host: 'localhost', port: null }).then(function (server) {
-                currentSuite.servers = [server];
-                afterAssignPort(currentSuite);
-            });
-        }
-        return deferred.promise;
+            }
+        });
     }
     //
     // Start appium based on the patata configuration suite
@@ -123,23 +114,23 @@ exports.cli = function (suiteName, patata) {
         // User first server (TODO: be able to use more servers)
         var server = currentSuite.servers[0];
         if (!server.attach) {
-            var appiumArgs = require(process.cwd() + '/node_modules/appium/build/lib/parser').getDefaultArgs();
+            var appiumArgs = require(path.join(process.cwd(), '/node_modules/appium/build/lib/parser')).getDefaultArgs();
             appiumArgs.address = server.host;
             appiumArgs.port = server.port;
             appiumArgs.debugLogSpacing = true;
             appiumArgs.loglevel = 'warning';
             server = extend(appiumArgs, server);
-            require(process.cwd() + '/node_modules/appium/build/lib/main').main(appiumArgs);
+            require(path.join(process.cwd(), '/node_modules/appium/build/lib/main')).main(appiumArgs);
         }
-        var deferred = Q.defer();
-        setTimeout(deferred.resolve, 5000);
-        return deferred.promise;
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, 5000);
+        });
     }
     function stopAppium() {
         if (appiumApp && typeof appiumApp.exit === 'function') {
-            console.log("Stopping Appium...");
+            console.log(patata.log.getMessage("Stopping Appium..."));
             appiumApp.exit();
-            console.log("Appium stopped...");
+            console.log(patata.log.getMessage("Appium stopped..."));
         }
     }
     //
@@ -148,7 +139,7 @@ exports.cli = function (suiteName, patata) {
     //
     function createCucumberArgs(patata) {
         // Load Patata support files for Cucumber
-        var supportDir = process.cwd() + '/node_modules/patata/dist/js/cucumber/support/';
+        var supportDir = path.join(__dirname, '/cucumber/support/');
         // Create default arguments for cucumber
         var defaultArgs = ['', '', '--require', supportDir];
         var featureFilesArgs = buildWithArgs('', patata.currentSuite.features.files, '');
@@ -213,16 +204,16 @@ exports.cli = function (suiteName, patata) {
     }
     function printMessage(patata, args) {
         try {
-            console.log("Tags:".cyan, "\t\t " + patata.currentSuite.features.tags);
-            console.log("Scenarios:".cyan, "\t " + patata.currentSuite.features.scenarios);
-            console.log("Components:".cyan, "\t " + patata.currentSuite.components);
-            console.log("Include:".cyan, "\t " + patata.currentSuite.include);
-            console.log("Features:".cyan, "\t " + patata.currentSuite.features.files);
-            console.log("Reports:".cyan, "\t " + JSON.stringify(patata.reports));
-            console.log("\n");
-            console.log('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers));
-            console.log("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2)));
-            console.log("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability));
+            console.log(patata.log.getMessageWithCustomColors("Tags:".cyan, "\t\t " + patata.currentSuite.features.tags));
+            console.log(patata.log.getMessageWithCustomColors("Scenarios:".cyan, "\t " + patata.currentSuite.features.scenarios));
+            console.log(patata.log.getMessageWithCustomColors("Components:".cyan, "\t " + patata.currentSuite.components));
+            console.log(patata.log.getMessageWithCustomColors("Include:".cyan, "\t " + patata.currentSuite.include));
+            console.log(patata.log.getMessageWithCustomColors("Features:".cyan, "\t " + patata.currentSuite.features.files));
+            console.log(patata.log.getMessageWithCustomColors("Reports:".cyan, "\t " + JSON.stringify(patata.reports)));
+            console.log(patata.log.getMessageWithCustomColors("\n"));
+            console.log(patata.log.getMessageWithCustomColors('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers)));
+            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2))));
+            console.log(patata.log.getMessageWithCustomColors("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability)));
             console.log("\n");
         }
         catch (ex) {
@@ -230,11 +221,11 @@ exports.cli = function (suiteName, patata) {
         }
     }
     function printLogo() {
-        var logoPromise = Q.defer();
-        asciify('patata.io', { color: 'yellow' }, function (err, res) {
-            console.log(res);
-            logoPromise.resolve();
+        return new Promise((resolve, reject) => {
+            asciify('patata.io', { color: 'yellow' }, function (err, res) {
+                console.log(res);
+                resolve();
+            });
         });
-        return logoPromise.promise;
     }
 };

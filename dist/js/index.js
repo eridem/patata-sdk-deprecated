@@ -1,4 +1,4 @@
 "use strict";
-var Patata = require('./patata');
+const Patata = require('./patata');
 var singleton = new Patata.Patata();
 module.exports = singleton;

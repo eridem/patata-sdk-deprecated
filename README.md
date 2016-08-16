@@ -4,11 +4,18 @@ A framework for easy and quick testing of mobile applications using BDD.
 
 ![Patata](http://patata.io/icon.png)
 
-# Install it
+# Quick start!
+
+Install the CLI tool that can help us with scaffolding operations:
 
 ```
 npm install -g patata-cli
-npm install --save patata
+```
+
+Then, create a new project:
+
+```
+patata --init
 ```
 
 # Patata keywords
