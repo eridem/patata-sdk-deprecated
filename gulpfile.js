@@ -15,8 +15,7 @@ gulp.task('ts:compile', function () {
             .pipe(ts(tsProject));
 	
 	return merge([
-		tsResult.dts.pipe(gulp.dest('dist/definitions')),
-		tsResult.js.pipe(gulp.dest('dist/js'))
+		tsResult.js.pipe(gulp.dest('dist'))
 	]);
 });
 

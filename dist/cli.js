@@ -1,9 +1,9 @@
 "use strict";
-const getPort = require('get-port');
+const path = require('path');
+const getPort = require(path.join(__dirname, './utils/get-port'));
 const colors = require('colors');
 const extend = require('util')._extend;
 const asciify = require('asciify');
-const path = require('path');
 var appiumApp;
 exports.cli = function (suiteName, patata) {
     if (typeof suiteName !== 'string') {
