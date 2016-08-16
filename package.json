@@ -1,8 +1,8 @@
 {
   "name": "patata",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "Native testing made easy",
-  "main": "dist/js/index.js",
+  "main": "dist/index.js",
   "author": "Miguel Ángel Domínguez Coloma <m@eridem.net> (http://eridem.net)",
   "constributors": [],
   "license": "MIT",
