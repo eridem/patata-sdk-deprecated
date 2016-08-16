@@ -1,137 +1,65 @@
 import * as Models from '../../patata.d';
 
 let reporter = function() {      
-    class CallBackCounter {
-        private _max: number;
-        private _counter: number;
-        private _callback: any;
-        
-        constructor(max: number, callback: any) {
-            this._max = max;
-            this._counter = 0;
-            this._callback = callback;
-        }
-        
-        public addCallback():void {
-            this._counter = this._counter + 1;
-            if (this._counter >= this._max) {
-                this._callback();
-            }
-        }
-    }
-      
+     
     let reportHelper = require('../../index').reportHelper;
     let reports = require('../../index').reports;
+    
+    this.chainReportPromises = function(reports, event, fnString, callback) {
+        if (!reports || !reports.lengt) {
+            callback();
+            return;
+        }
 
-    function getCallBackCounter(callback) {
-        return new CallBackCounter(reports.length, callback);
+        var mainPromise = reports[0][fnString](event);
+
+        for (var i = 1; i < reports.length; i++) {
+            if (!reports[i][fnString]) {
+                continue;
+            }
+
+            mainPromise = mainPromise.then(() => { 
+                reports[i][fnString](event);
+             })
+        }
+
+        mainPromise.then(callback)
     }
     
     this.registerHandler('BeforeFeature', function(event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.beforeFeature(reportHelper.toFeature(event), () => { callbackCounter.addCallback() });
-        });        
+        this.chainReportPromises(reports, reportHelper.toFeature(event), 'beforeFeature', callback);
     });
 
     this.registerHandler('AfterFeature', function(event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.afterFeature(reportHelper.toFeature(event), () => { callbackCounter.addCallback() });
-        });        
+        this.chainReportPromises(reports, reportHelper.toFeature(event), 'afterFeature', callback);    
     });
 
     this.registerHandler('FeaturesResult', function(event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.featuresResult(reportHelper.toFeaturesResult(event), () => { callbackCounter.addCallback() });
-        });        
+        this.chainReportPromises(reports, reportHelper.toFeaturesResult(event), 'featuresResult', callback);          
     });
 
     this.registerHandler('BeforeScenario', function (event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.beforeScenario(reportHelper.toScenario(event), () => { callbackCounter.addCallback() });
-        });        
+        this.chainReportPromises(reports, reportHelper.toScenario(event), 'beforeScenario', callback);     
     });
 
     this.registerHandler('AfterScenario', function (event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.afterScenario(reportHelper.toScenario(event), () => { callbackCounter.addCallback() });
-        });
+        this.chainReportPromises(reports, reportHelper.toScenario(event), 'afterScenario', callback);     
     });
 
     this.registerHandler('ScenarioResult', function(event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.scenarioResult(reportHelper.toScenarioResult(event), () => { callbackCounter.addCallback() });
-        });        
+        this.chainReportPromises(reports, reportHelper.toScenarioResult(event), 'scenarioResult', callback);       
     });
 
     this.registerHandler('BeforeStep', function (event, callback) {
-        if (!reports) {
-            callback();
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.beforeStep(reportHelper.toStep(event), () => { callbackCounter.addCallback() });
-        });
+        this.chainReportPromises(reports, reportHelper.toStep(event), 'beforeStep', callback);
     });
 
     this.registerHandler('AfterStep', function (event, callback) {
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.afterStep(reportHelper.toStep(event), () => { callbackCounter.addCallback() });
-        });
+        this.chainReportPromises(reports, reportHelper.toStep(event), 'afterStep', callback);
     });
 
-    this.registerHandler('StepResult', function (event, callback) {      
-        if (!reports) {
-            callback();
-            return;
-        }
-        
-        let callbackCounter = getCallBackCounter(callback);
-        reports.forEach((report: Models.IReport) => {
-            report.stepResult(reportHelper.toStepResult(event), () => { callbackCounter.addCallback() });
-        });
+    this.registerHandler('StepResult', function (event, callback) {
+        this.chainReportPromises(reports, reportHelper.toStepResult(event), 'stepResult', callback);
     });
 }
 

@@ -1,5 +1,6 @@
 "use strict";
 var fs = require('fs');
+/// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 var JsonReport = (function () {
     function JsonReport(opts) {
         this._result = { features: [] };
@@ -17,51 +18,132 @@ var JsonReport = (function () {
         }
     };
     JsonReport.prototype.fromEmulator = function (action, meth, path, data) {
-        var placeToSave = this._currentStep || this._currentScenario || this._currentFeature;
-        placeToSave.emulatorSteps = placeToSave.emulatorSteps || [];
-        placeToSave.emulatorSteps.push({ action: action, meth: meth, path: path, data: data });
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                var placeToSave = _this._currentStep || _this._currentScenario || _this._currentFeature;
+                placeToSave.emulatorSteps = placeToSave.emulatorSteps || [];
+                placeToSave.emulatorSteps.push({ action: action, meth: meth, path: path, data: data });
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.beforeFeature = function (event, callback) {
-        this._result.features.push(event);
-        this._currentFeature = event;
-        callback();
+    JsonReport.prototype.beforeFeature = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._result.features.push(event);
+                _this._currentFeature = event;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.afterFeature = function (event, callback) {
-        this._currentFeature = null;
-        callback();
+    JsonReport.prototype.afterFeature = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentFeature = null;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.featuresResult = function (event, callback) {
-        this._currentFeature.result = event;
-        callback();
+    JsonReport.prototype.featuresResult = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentFeature.result = event;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.beforeScenario = function (event, callback) {
-        this._currentFeature.scenarios = this._currentFeature.scenarios || [];
-        this._currentFeature.scenarios.push(event);
-        this._currentScenario = event;
-        callback();
+    JsonReport.prototype.beforeScenario = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentFeature.scenarios = _this._currentFeature.scenarios || [];
+                _this._currentFeature.scenarios.push(event);
+                _this._currentScenario = event;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.afterScenario = function (event, callback) {
-        this._currentScenario = null;
-        callback();
+    JsonReport.prototype.afterScenario = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentScenario = null;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.scenarioResult = function (event, callback) {
-        this._currentScenario.result = event;
-        callback();
+    JsonReport.prototype.scenarioResult = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentScenario.result = event;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.beforeStep = function (event, callback) {
-        this._currentScenario.steps = this._currentScenario.steps || [];
-        this._currentScenario.steps.push(event);
-        this._currentStep = event;
-        callback();
+    JsonReport.prototype.beforeStep = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentScenario.steps = _this._currentScenario.steps || [];
+                _this._currentScenario.steps.push(event);
+                _this._currentStep = event;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.afterStep = function (event, callback) {
-        this._currentStep = null;
-        callback();
+    JsonReport.prototype.afterStep = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentStep = null;
+                resolve();
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
-    JsonReport.prototype.stepResult = function (event, callback) {
-        this._currentStep.result = event;
-        var resultAsString = JSON.stringify(this._result);
-        fs.writeFile(this.path, resultAsString, callback);
+    JsonReport.prototype.stepResult = function (event) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            try {
+                _this._currentStep.result = event;
+                var resultAsString = JSON.stringify(_this._result);
+                fs.writeFile(_this.path, resultAsString, resolve);
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
     };
     return JsonReport;
 }());
