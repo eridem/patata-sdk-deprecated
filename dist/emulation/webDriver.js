@@ -34,17 +34,23 @@ class WebDriver {
     registerReports(report) {
         this.driver.on('status', function (info) {
             report.forEach(report => {
-                report.fromEmulator('status', info, '', '');
+                if (typeof report.fromEmulator === 'function') {
+                    report.fromEmulator('status', info, '', '');
+                }
             });
         });
         this.driver.on('command', function (meth, path, data) {
             report.forEach(report => {
-                report.fromEmulator('command', meth, path, data || '');
+                if (typeof report.fromEmulator === 'function') {
+                    report.fromEmulator('command', meth, path, data || '');
+                }
             });
         });
         this.driver.on('http', function (meth, path, data) {
             report.forEach(report => {
-                report.fromEmulator('http', meth, path, data || '');
+                if (typeof report.fromEmulator === 'function') {
+                    report.fromEmulator('http', meth, path, data || '');
+                }
             });
         });
         return this;
