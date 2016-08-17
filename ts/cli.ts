@@ -243,17 +243,19 @@ exports.cli = function (suiteName, patata) {
     }
 
     function printMessage(patata, args) {
+        let suite = patata.currentSuite
+        let { features, components, include, servers, capability, reports } = suite
         try {
-            console.log(patata.log.getMessageWithCustomColors("Tags:".cyan, "\t\t " + patata.currentSuite.features.tags));
-            console.log(patata.log.getMessageWithCustomColors("Scenarios:".cyan, "\t " + patata.currentSuite.features.scenarios));
-            console.log(patata.log.getMessageWithCustomColors("Components:".cyan, "\t " + patata.currentSuite.components));
-            console.log(patata.log.getMessageWithCustomColors("Include:".cyan, "\t " + patata.currentSuite.include));
-            console.log(patata.log.getMessageWithCustomColors("Features:".cyan, "\t " + patata.currentSuite.features.files));
-            console.log(patata.log.getMessageWithCustomColors("Reports:".cyan, "\t " + JSON.stringify(patata.reports)));
+            console.log(patata.log.getMessageWithCustomColors("Tags:".cyan, "\t\t " + (features.tags || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Scenarios:".cyan, "\t " + (features.scenarios || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Components:".cyan, "\t " + (components || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Include:".cyan, "\t " + (include || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Features:".cyan, "\t " + (features.files || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Reports:".cyan, "\t " + (JSON.stringify(reports) || '').gray));
             console.log(patata.log.getMessageWithCustomColors("\n"));
-            console.log(patata.log.getMessageWithCustomColors('Appium: '.cyan, "\t" + JSON.stringify(patata.currentSuite.servers)));
-            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan, "\t" + JSON.stringify(args.slice(2))));
-            console.log(patata.log.getMessageWithCustomColors("Capabilities:".cyan, "\t" + JSON.stringify(patata.capability)));
+            console.log(patata.log.getMessageWithCustomColors('Appium: '.cyan, "\t" + (JSON.stringify(servers) || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan, "\t" + (JSON.stringify(args.slice(2))  || '').gray));
+            console.log(patata.log.getMessageWithCustomColors("Capabilities:".cyan, "\t" + (JSON.stringify(capability) || '').gray));
             console.log("\n");
         } catch (ex) {
             console.warn('There was a problem showing summary messages.');
