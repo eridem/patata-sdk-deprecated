@@ -62,7 +62,7 @@ export class JsonReport implements Models.IReport {
     public featuresResult(event: Models.IFeaturesResult): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             try {
-                this._currentFeature.result = event;
+                this._result.result = event;
                 resolve();
             } catch (ex) {
                 reject(ex)

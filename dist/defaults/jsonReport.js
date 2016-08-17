@@ -52,7 +52,7 @@ class JsonReport {
     featuresResult(event) {
         return new Promise((resolve, reject) => {
             try {
-                this._currentFeature.result = event;
+                this._result.result = event;
                 resolve();
             }
             catch (ex) {
