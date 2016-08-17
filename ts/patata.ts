@@ -136,7 +136,7 @@ export class Patata implements Models.IPatata {
 
             this._provider.getBin().then((uri) => {
                 this.emulator.start(uri).then(() => {
-                    this._log.getMessage('Using binary: ' + uri)
+                    console.log(this.log.getMessage('Using binary: ' + uri))
                     resolve(this);
                 }).catch((error) => {
                     reject(error);
