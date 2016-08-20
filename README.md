@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/eridem/patata.svg?branch=master)](https://travis-ci.org/eridem/patata)
+
 # Patata
 
 A framework for easy and quick testing of mobile applications using BDD. 
