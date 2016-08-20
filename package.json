@@ -1,6 +1,6 @@
 {
   "name": "patata",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Native testing made easy",
   "main": "dist/index.js",
   "author": "Miguel Ángel Domínguez Coloma <m@eridem.net> (http://eridem.net)",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/patataio/patata.git"
+    "url": "git@github.com:eridem/patata.git"
   },
   "dependencies": {
     "appium": "^1.5.3",
@@ -30,7 +30,10 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
     "gulp-typescript": "^2.12.1",
-    "merge2": "^1.0.1"
+    "merge2": "^1.0.1",
+    "mocha": "^2.5.3",
+    "typescript": "^1.8.9"
   }
 }

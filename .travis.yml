@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '6'
+before_script:
+- npm install -g gulp
+script: gulp
+install:
+- npm install
+deploy:
+  provider: npm
+  email: m@eridem.net
+  api_key:
+    secure: ifK8O+uOjpfY24/zXRuYGMRKks0z7OvQZUNQ198nGDYx874xwnJmxynA+meOwgElm4WbyFb3SL5a1fjiucwJ8m3VHUn1m2r5eWeJMXjvUsHBxsAm1dpdlkXQbwKlTFQD17O2zwrtxj9+ZcNaj1TlKTwu0PHBJzPSPmR7KXF9TAC4az4hLu+cSSEE1PxxPvQwK6qqittlMlT4wlA5j73jBtDa4IFhFgD8VaSKnn1pD5JKLayMWnzQmUnRQLRxXyiF4vU1YN7aTfcRSKcs7DeCJgy3VR8Gbekw1voOybuJjJyt2FTpjuGQ5GjrJCWejLKem5xfNZUPQcwoTWmlR3eK2/2LABqkw/GFJj/yn3jFvwN85A1H0KDrxnCDzQM5ATmxZTpfOzC/ReyZ6vEx98dOooCd8ARy6sJdkPGg8PU2UzQeXY66g9E/BZO0uCdJsmQe+7ETdmvleEFUatO/jdi6gbKzxI3Qiz2CCve1Uj881G8gjHXq/B8p6lPwvXdrtyHcdoU7TNtOhWVjNRONybrgng2k4gE1TmrK1VoMHzK/cMmKWpNTz8MZRmQ6qkEAHIbu4wUzqGeKtN4l9Jt5fdo3CizXQ6Wyu7KTihxopoC8MAQPk1p53P3M3OLjKNJl9JtfBtQb2/8abrSzCzbs9P9mFdnkKihIa3TVTxHyybusGc8=
+  on:
+    tags: true
+    repo: eridem/patata
