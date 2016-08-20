@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/q/Q.d.ts" />
+/// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 
 export interface IPatata {
     currentSuite: ISuiteConfiguration;
@@ -27,6 +27,7 @@ export interface IFileUtils {
 
 export interface ILog {
     getMessage(message:string):string;
+    getMessageWithCustomColors(message: string):string;
     getErrorMessage(message:string):string;
     getError(message:string):Error;
 }
@@ -59,23 +60,23 @@ export interface ISuiteConfiguration {
 }
 
 export interface IProvider {
-    getBin():Q.IPromise<string>;
+    getBin(): Promise<string>;
 }
 
 export interface IReport {
-    fromEmulator(action: string, meth: string, path: string, data: string): void;
+    fromEmulator(action: string, meth: string, path: string, data: string): Promise<void>;
     
-    beforeFeature(feature: IFeature, callback: any): void;
-    afterFeature(feature: IFeature, callback: any): void;
-    featuresResult(feature: IFeaturesResult, callback: any): void;
+    beforeFeature(feature: IFeature): Promise<void>;
+    afterFeature(feature: IFeature): Promise<void>;
+    featuresResult(feature: IFeaturesResult): Promise<void>;
     
-    beforeScenario(scenario: IScenario, callback: any): void;
-    afterScenario(scenario: IScenario, callback: any): void;
-    scenarioResult(scenario: IScenarioResult, callback: any): void;
+    beforeScenario(scenario: IScenario): Promise<void>;
+    afterScenario(scenario: IScenario): Promise<void>;
+    scenarioResult(scenario: IScenarioResult): Promise<void>;
     
-    beforeStep(step: IStep, callback: any): void;
-    afterStep(step: IStep, callback: any): void;    
-    stepResult(event: any, callback: any): void;
+    beforeStep(step: IStep): Promise<void>;
+    afterStep(step: IStep): Promise<void>; 
+    stepResult(event: any): Promise<void>;
 }
 
 export interface ILogger {
@@ -105,7 +106,7 @@ export interface IServer {
 
 export interface IEmulator {
     registerReports(report: Array<IReport>): IEmulator;
-    start(uri: string):Q.IPromise<IEmulator>;
+    start(uri: string): Promise<IEmulator>;
     quit():IEmulator;
     driver:any;
 }

@@ -1,11 +1,12 @@
 "use strict";
 
-var gulp = require('gulp');
+const gulp = require('gulp');
 
-var ts = require('gulp-typescript');
-var merge = require('merge2');
+const ts = require('gulp-typescript');
+const merge = require('merge2');
+const mocha = require('gulp-mocha');
 
-var tsProject = ts.createProject('tsconfig.json');
+const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('op:clean', function () {
 });
@@ -15,11 +16,21 @@ gulp.task('ts:compile', function () {
             .pipe(ts(tsProject));
 	
 	return merge([
-		tsResult.dts.pipe(gulp.dest('dist/definitions')),
-		tsResult.js.pipe(gulp.dest('dist/js'))
+		tsResult.js.pipe(gulp.dest('dist'))
 	]);
 });
 
 gulp.task('build', ['op:clean', 'ts:compile'], function () {
 	gulp.watch(['ts/**/*.ts', 'tsconfig.json'], ['op:clean', 'ts:compile']);
 });
+
+gulp.task('default', () => 
+    gulp.src('./test/*.js')
+        .pipe(mocha())
+        .once('error', () => {
+            process.exit(1);
+        })
+        .once('end', () => {
+            process.exit();
+        })
+);

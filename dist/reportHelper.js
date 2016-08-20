@@ -1,9 +1,7 @@
 "use strict";
-var ReportHelper = (function () {
-    function ReportHelper() {
-    }
-    ReportHelper.prototype.toFeature = function (event) {
-        var result = {
+class ReportHelper {
+    toFeature(event) {
+        let result = {
             description: event.getDescription(),
             keyword: event.getKeyword(),
             line: event.getLine(),
@@ -14,9 +12,9 @@ var ReportHelper = (function () {
             uri: event.getUri(),
         };
         return result;
-    };
-    ReportHelper.prototype.toScenario = function (event) {
-        var result = {
+    }
+    toScenario(event) {
+        let result = {
             description: event.getDescription(),
             keyword: event.getKeyword(),
             line: event.getLine(),
@@ -26,9 +24,9 @@ var ReportHelper = (function () {
             uri: event.getUri(),
         };
         return result;
-    };
-    ReportHelper.prototype.toStep = function (event) {
-        var result = {
+    }
+    toStep(event) {
+        let result = {
             arguments: event.getArguments(),
             keyword: event.getKeyword(),
             line: event.getLine(),
@@ -45,8 +43,8 @@ var ReportHelper = (function () {
             isRepeatingOutcomeStep: event.isRepeatingOutcomeStep(),
         };
         return result;
-    };
-    ReportHelper.prototype.toStepResult = function (event) {
+    }
+    toStepResult(event) {
         var result = {
             duration: event.getDuration(),
             failureException: event.getFailureException(),
@@ -54,8 +52,8 @@ var ReportHelper = (function () {
             status: event.status
         };
         return result;
-    };
-    ReportHelper.prototype.toScenarioResult = function (event) {
+    }
+    toScenarioResult(event) {
         var result = {
             duration: event.getDuration(),
             failureException: event.getFailureException(),
@@ -63,8 +61,8 @@ var ReportHelper = (function () {
             status: event.status
         };
         return result;
-    };
-    ReportHelper.prototype.toFeaturesResult = function (event) {
+    }
+    toFeaturesResult(event) {
         var result = {
             duration: event.getDuration(),
             isSuccessful: event.isSuccessful(),
@@ -72,7 +70,6 @@ var ReportHelper = (function () {
             scenarioCounts: event.getScenarioCounts()
         };
         return result;
-    };
-    return ReportHelper;
-}());
+    }
+}
 exports.ReportHelper = ReportHelper;

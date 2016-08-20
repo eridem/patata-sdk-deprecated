@@ -1,12 +1,7 @@
-import * as Models from '../patata.d';
+"use strict";
 var fs = require('fs');
-
-export class DefaultProvider implements Models.IProvider {
-    private _opts: any;
-    private _patata: Models.IPatata;
-    private get log(): Models.ILog { return this._patata.log; }
-
-    constructor(patata: Models.IPatata, opts: any) {
+class DefaultProvider {
+    constructor(patata, opts) {
         this._patata = patata;
         this._opts = opts;
         if (!this._opts.path) {
@@ -14,18 +9,20 @@ export class DefaultProvider implements Models.IProvider {
         }
         return this;
     }
-
-    public getBin(): Promise<String> {
-        return new Promise<String>((resolve, reject) => {
+    get log() { return this._patata.log; }
+    getBin() {
+        return new Promise((resolve, reject) => {
             let file = process.cwd() + '/' + this._opts.path;
             try {
                 fs.statSync(file);
-            } catch (err) {
+            }
+            catch (err) {
                 if (err.code == 'ENOENT') {
                     throw this.log.getError(`[Default provider] file not found [${file}]`);
                 }
             }
             resolve(file);
-        })
+        });
     }
 }
+exports.DefaultProvider = DefaultProvider;
