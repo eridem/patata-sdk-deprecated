@@ -9,7 +9,11 @@ const asciify = require('asciify')
 
 var appiumApp;
 
-exports.cli = function (suiteName, patata) {
+exports.cli = function (opts) {
+    let { suiteName, patata } = opts;
+    let mainResolve = opts.resolve;
+    let mainReject = opts.reject
+
     if (typeof suiteName !== 'string') {
         var argv = process.argv;
         if (argv.length < 3) {
@@ -20,9 +24,9 @@ exports.cli = function (suiteName, patata) {
         suiteName = argv[2];
     }
 
-    function exitHandler(options, err) {
+    const exitHandler = (options, err) => {
         stopAppium();
-        if (options.exit) process.exit();
+        return mainResolve();
     }
 
     //do something when app is closing
@@ -203,7 +207,11 @@ exports.cli = function (suiteName, patata) {
             var code = succeeded ? 0 : 1;
 
             function exitNow() {
-                process.exit(code);
+                if (code === 0) {
+                    mainResolve()
+                } else {
+                    mainReject(code)
+                }
             }
 
             if (process.stdout.write('')) {
@@ -238,8 +246,7 @@ exports.cli = function (suiteName, patata) {
 
     function exitWithError(message) {
         stopAppium();
-        console.error(message);
-        process.exit(1);
+        return reject(message)
     }
 
     function printMessage(patata, args) {
@@ -254,7 +261,7 @@ exports.cli = function (suiteName, patata) {
             console.log(patata.log.getMessageWithCustomColors("Reports:".cyan + "\t " + (JSON.stringify(reports) || '').toString().gray));
             console.log(patata.log.getMessageWithCustomColors("\n"));
             console.log(patata.log.getMessageWithCustomColors('Appium: '.cyan + "\t" + (JSON.stringify(servers) || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan + "\t" + (JSON.stringify(args.slice(2))  || '').toString().gray));
+            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan + "\t" + (JSON.stringify(args.slice(2)) || '').toString().gray));
             console.log(patata.log.getMessageWithCustomColors("Capabilities:".cyan + "\t" + (JSON.stringify(capability) || '').toString().gray));
             console.log("\n");
         } catch (ex) {

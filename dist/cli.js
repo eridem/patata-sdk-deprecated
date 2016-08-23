@@ -5,7 +5,10 @@ const colors = require('colors');
 const extend = require('util')._extend;
 const asciify = require('asciify');
 var appiumApp;
-exports.cli = function (suiteName, patata) {
+exports.cli = function (opts) {
+    let { suiteName, patata } = opts;
+    let mainResolve = opts.resolve;
+    let mainReject = opts.reject;
     if (typeof suiteName !== 'string') {
         var argv = process.argv;
         if (argv.length < 3) {
@@ -14,11 +17,10 @@ exports.cli = function (suiteName, patata) {
         // Get suite name
         suiteName = argv[2];
     }
-    function exitHandler(options, err) {
+    const exitHandler = (options, err) => {
         stopAppium();
-        if (options.exit)
-            process.exit();
-    }
+        return mainResolve();
+    };
     //do something when app is closing
     process.on('exit', exitHandler.bind(null, { cleanup: true }));
     //catches ctrl+c event
@@ -169,7 +171,12 @@ exports.cli = function (suiteName, patata) {
             stopAppium();
             var code = succeeded ? 0 : 1;
             function exitNow() {
-                process.exit(code);
+                if (code === 0) {
+                    mainResolve();
+                }
+                else {
+                    mainReject(code);
+                }
             }
             if (process.stdout.write('')) {
                 exitNow();
@@ -199,8 +206,7 @@ exports.cli = function (suiteName, patata) {
     }
     function exitWithError(message) {
         stopAppium();
-        console.error(message);
-        process.exit(1);
+        return reject(message);
     }
     function printMessage(patata, args) {
         let suite = patata.currentSuite;
