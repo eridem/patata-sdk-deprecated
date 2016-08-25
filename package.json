@@ -1,6 +1,6 @@
 {
   "name": "patata",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Native testing made easy",
   "main": "dist/index.js",
   "author": "Miguel Ángel Domínguez Coloma <m@eridem.net> (http://eridem.net)",

@@ -10,9 +10,11 @@ const asciify = require('asciify')
 var appiumApp;
 
 exports.cli = function (opts) {
-    let { suiteName, patata } = opts;
+    let { suiteName, patata, logType = 'warning' } = opts;
     let mainResolve = opts.resolve;
     let mainReject = opts.reject
+    
+    patata.log.setShowType(logType)
 
     if (typeof suiteName !== 'string') {
         var argv = process.argv;
@@ -43,11 +45,11 @@ exports.cli = function (opts) {
             throw patata.log.getError("No suites launched. Please use: patata -s [suite]");
         }
 
-        console.log(patata.log.getMessage('Fixing default values...'))
+        patata.log.verbose('Fixing default values...')
 
         // Fix default values
         fixDefaultValues(patata, suiteName).then(function (patata: Models.IPatata) {
-            console.log(patata.log.getMessage('Loading suite...'))
+            patata.log.verbose('Loading suite...')
 
             // Current suite
             var currentSuite = patata.getSuite(suiteName);
@@ -157,9 +159,9 @@ exports.cli = function (opts) {
 
     function stopAppium() {
         if (appiumApp && typeof appiumApp.exit === 'function') {
-            console.log(patata.log.getMessage("Stopping Appium..."));
+            patata.warning("Stopping Appium...");
             appiumApp.exit();
-            console.log(patata.log.getMessage("Appium stopped..."));
+            patata.warning("Appium stopped...");
         }
     }
 
@@ -246,33 +248,31 @@ exports.cli = function (opts) {
 
     function exitWithError(message) {
         stopAppium();
-        return reject(message)
+        return mainReject(message)
     }
 
     function printMessage(patata, args) {
         let suite = patata.currentSuite
         let { features, components, include, servers, capability, reports } = suite
         try {
-            console.log(patata.log.getMessageWithCustomColors("Tags:".cyan + "\t\t " + (features.tags || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Scenarios:".cyan + "\t " + (features.scenarios || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Components:".cyan + "\t " + (components || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Include:".cyan + "\t " + (include || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Features:".cyan + "\t " + (features.files || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Reports:".cyan + "\t " + (JSON.stringify(reports) || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("\n"));
-            console.log(patata.log.getMessageWithCustomColors('Appium: '.cyan + "\t" + (JSON.stringify(servers) || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Cucumber:".cyan + "\t" + (JSON.stringify(args.slice(2)) || '').toString().gray));
-            console.log(patata.log.getMessageWithCustomColors("Capabilities:".cyan + "\t" + (JSON.stringify(capability) || '').toString().gray));
-            console.log("\n");
+            patata.log.debug("Tags:", "\t " + (features.tags || '').toString());
+            patata.log.verbose("Scenarios:", "\t " + (features.scenarios || '').toString());
+            patata.log.verbose("Components:", "\t " + (components || '').toString());
+            patata.log.verbose("Include:", "\t " + (include || '').toString());
+            patata.log.verbose("Features:", "\t " + (features.files || '').toString());
+            patata.log.verbose("Reports:", "\t " + (JSON.stringify(reports) || '').toString() + '\n');
+            patata.log.verbose('Appium: ', "\t" + (JSON.stringify(servers) || '').toString());
+            patata.log.verbose("Cucumber:", "\t" + (JSON.stringify(args.slice(2)) || '').toString());
+            patata.log.verbose("Capabilities:", "\t" + (JSON.stringify(capability) || '').toString() + '\n');
         } catch (ex) {
-            console.warn('There was a problem showing summary messages.');
+            patata.log.warning('There was a problem showing summary messages.');
         }
     }
 
     function printLogo() {
         return new Promise((resolve, reject) => {
-            asciify('patata.io', { color: 'yellow' }, function (err, res) {
-                console.log(res);
+            asciify('PATATA', { color: 'yellow' }, function (err, res) {
+                patata.log.always('Time for...\n'.yellow + res.yellow + '...and happy testing.\n'.yellow);
                 resolve();
             })
         })

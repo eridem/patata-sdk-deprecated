@@ -30,6 +30,11 @@ export interface ILog {
     getMessageWithCustomColors(message: string):string;
     getErrorMessage(message:string):string;
     getError(message:string):Error;
+
+    setShowType(type: string): void;
+    verbose(message): void;
+    debug(message): void;
+    warning(message): void;
 }
 
 export interface IFlavour {

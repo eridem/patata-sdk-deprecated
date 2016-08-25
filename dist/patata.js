@@ -96,7 +96,7 @@ class Patata {
             }
             this._provider.getBin().then((uri) => {
                 this.emulator.start(uri).then(() => {
-                    console.log(this.log.getMessage('Using binary: ' + uri));
+                    log.debug('Using binary: ' + uri);
                     resolve(this);
                 }).catch((error) => {
                     reject(error);
@@ -113,8 +113,6 @@ class Patata {
     }
     component(name, fn) {
         if (!name || !fn)
-            return this;
-        if (this.emulator.driver[name])
             return this;
         if (fn.length === 0) {
             Object.defineProperty(Object.prototype, name, { get: fn });
