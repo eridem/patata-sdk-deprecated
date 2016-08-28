@@ -1,5 +1,4 @@
 import * as Models from '../patata.d';
-var fs = require('fs');
 
 export class DefaultProvider implements Models.IProvider {
     private _opts: any;
@@ -17,14 +16,7 @@ export class DefaultProvider implements Models.IProvider {
 
     public getBin(): Promise<String> {
         return new Promise<String>((resolve, reject) => {
-            let file = process.cwd() + '/' + this._opts.path;
-            try {
-                fs.statSync(file);
-            } catch (err) {
-                if (err.code == 'ENOENT') {
-                    throw this.log.getError(`[Default provider] file not found [${file}]`);
-                }
-            }
+            let file = this._opts.path;
             resolve(file);
         })
     }

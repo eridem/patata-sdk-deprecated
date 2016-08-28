@@ -10,7 +10,6 @@ import * as ReportFactory from './defaults/defaultReportFactory';
 import * as FileUtils from './fileUtils';
 import * as Log from './log';
 
-const Cli = require('./cli');
 require('./dependencies');
 
 export class Patata implements Models.IPatata {
@@ -58,7 +57,6 @@ export class Patata implements Models.IPatata {
         return this._reportFactory;
     }
 
-    public get cli(): any { return Cli.cli; }
     public get capability(): Models.ICapability { return this._capability; }
     public get servers(): Array<Models.IServer> { return this._servers; }
     public get reports(): Array<Models.IReport> { return this._reports; }

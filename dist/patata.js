@@ -6,7 +6,6 @@ const ReportHelper = require('./reportHelper');
 const ReportFactory = require('./defaults/defaultReportFactory');
 const FileUtils = require('./fileUtils');
 const Log = require('./log');
-const Cli = require('./cli');
 require('./dependencies');
 class Patata {
     constructor() {
@@ -38,7 +37,6 @@ class Patata {
         }
         return this._reportFactory;
     }
-    get cli() { return Cli.cli; }
     get capability() { return this._capability; }
     get servers() { return this._servers; }
     get reports() { return this._reports; }
@@ -96,7 +94,7 @@ class Patata {
             }
             this._provider.getBin().then((uri) => {
                 this.emulator.start(uri).then(() => {
-                    log.debug('Using binary: ' + uri);
+                    console.log(this.log.getMessage('Using binary: ' + uri));
                     resolve(this);
                 }).catch((error) => {
                     reject(error);

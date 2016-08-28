@@ -1,5 +1,4 @@
 "use strict";
-var fs = require('fs');
 class DefaultProvider {
     constructor(patata, opts) {
         this._patata = patata;
@@ -12,15 +11,7 @@ class DefaultProvider {
     get log() { return this._patata.log; }
     getBin() {
         return new Promise((resolve, reject) => {
-            let file = process.cwd() + '/' + this._opts.path;
-            try {
-                fs.statSync(file);
-            }
-            catch (err) {
-                if (err.code == 'ENOENT') {
-                    throw this.log.getError(`[Default provider] file not found [${file}]`);
-                }
-            }
+            let file = this._opts.path;
             resolve(file);
         });
     }
