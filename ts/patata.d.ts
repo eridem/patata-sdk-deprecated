@@ -114,6 +114,7 @@ export interface IEmulator {
     start(uri: string): Promise<IEmulator>;
     quit():IEmulator;
     driver:any;
+    appiumMsgQueue: any[]
 }
 
 export interface ILoaderHelper {

@@ -7,6 +7,7 @@ export class WebDriver implements Models.IEmulator {
 
     private _driver: any;
     private _desired: any;
+    private _appiumMsgQueue: any[];
 
     constructor(patata: Models.IPatata) {
         this._desired = patata.capability;
@@ -38,6 +39,13 @@ export class WebDriver implements Models.IEmulator {
         return this._driver;
     }
 
+    public get appiumMsgQueue(): any[] {
+        if (!this._appiumMsgQueue) {
+            this._appiumMsgQueue = []
+        }
+        return this._appiumMsgQueue;
+    }
+
     private buildDriverChain(): void {
         require("chai-as-promised").transferPromiseness = require('wd').transferPromiseness;
     }
@@ -50,7 +58,10 @@ export class WebDriver implements Models.IEmulator {
     }
 
     public registerReports(report: Array<Models.IReport>): Models.IEmulator {
+        let that = this
         this.driver.on('status', function (info) {
+            that.appiumMsgQueue.push({ status: 'status', info });
+
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('status', info, '', '');
@@ -58,6 +69,8 @@ export class WebDriver implements Models.IEmulator {
             });
         });
         this.driver.on('command', function (meth, path, data) {
+            that.appiumMsgQueue.push({ status: 'command', meth, path, data: data || '' });
+
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('command', meth, path, data || '');
@@ -65,6 +78,8 @@ export class WebDriver implements Models.IEmulator {
             });
         });
         this.driver.on('http', function (meth, path, data) {
+            that.appiumMsgQueue.push({ status: 'http', meth, path, data: data || '' });
+
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('http', meth, path, data || '');

@@ -22,6 +22,12 @@ class WebDriver {
     get driver() {
         return this._driver;
     }
+    get appiumMsgQueue() {
+        if (!this._appiumMsgQueue) {
+            this._appiumMsgQueue = [];
+        }
+        return this._appiumMsgQueue;
+    }
     buildDriverChain() {
         require("chai-as-promised").transferPromiseness = require('wd').transferPromiseness;
     }
@@ -32,7 +38,9 @@ class WebDriver {
         }
     }
     registerReports(report) {
+        let that = this;
         this.driver.on('status', function (info) {
+            that.appiumMsgQueue.push({ status: 'status', info: info });
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('status', info, '', '');
@@ -40,6 +48,7 @@ class WebDriver {
             });
         });
         this.driver.on('command', function (meth, path, data) {
+            that.appiumMsgQueue.push({ status: 'command', meth: meth, path: path, data: data || '' });
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('command', meth, path, data || '');
@@ -47,6 +56,7 @@ class WebDriver {
             });
         });
         this.driver.on('http', function (meth, path, data) {
+            that.appiumMsgQueue.push({ status: 'http', meth: meth, path: path, data: data || '' });
             report.forEach(report => {
                 if (typeof report.fromEmulator === 'function') {
                     report.fromEmulator('http', meth, path, data || '');
